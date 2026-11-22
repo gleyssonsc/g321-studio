@@ -2,9 +2,9 @@
 
 Aplicativo independente e não oficial para uso com o headset Logitech G G321 LIGHTSPEED. Oferece equalizador de 10 bandas com presets, retorno de voz com volume ajustável e leitura da porcentagem de bateria. O projeto é mantido sem afiliação, patrocínio ou endosso da Logitech. [Headset compatível](https://www.logitechg.com/pt-br/shop/p/g321.981-001562)
 
-[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.1/G321-Studio-Setup-1.0.1.exe)
+[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.2/G321-Studio-Setup-1.0.2.exe)
 
-Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.1](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.1)
+Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.2](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.2)
 
 ![G321 Studio com o ícone da Logitech, headset em LIGHTSPEED, bateria em 80% e equalizador ligado no preset Plano](docs/interface.jpg)
 

@@ -16,7 +16,7 @@
 [Setup]
 AppId={{653ED62E-C65F-4D37-BBF7-8B55A029516D}
 AppName=G321 Studio
-AppVersion=1.0.1
+AppVersion=1.0.2
 DefaultDirName={localappdata}\Programs\G321 Studio
 DisableDirPage=yes
 DisableProgramGroupPage=yes
