@@ -2,19 +2,29 @@
 
 Aplicativo independente e não oficial para uso com o headset Logitech G G321 LIGHTSPEED. Oferece equalizador de 10 bandas com presets, retorno de voz com volume ajustável e leitura da porcentagem de bateria. O projeto é mantido sem afiliação, patrocínio ou endosso da Logitech. [Headset compatível](https://www.logitechg.com/pt-br/shop/p/g321.981-001562)
 
-## Instalação
+[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.1/G321-Studio-Setup-1.0.1.exe)
 
-Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. Abra **G321 Studio Setup.exe** na conta que vai usar o aplicativo. O arquivo inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. A instalação pode ser feita sem internet.
+Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.1](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.1)
 
-Mantenha selecionada a opção **Iniciar o G321 Studio na bandeja ao entrar no Windows** se quiser iniciar o app junto com o Windows. Para atualizar ou desinstalar o G321 Studio, use **Sair** na bandeja antes de abrir o instalador ou o desinstalador.
+![Interface do G321 Studio com a curva do equalizador e o preset Jogos](docs/interface.png)
 
-## Equalizador
+*Captura em uma VM com o preset Jogos selecionado e o headset desconectado.*
 
-O EQ direto usa o Equalizer APO na saída de reprodução **G321 LIGHTSPEED**. Se o Equalizer APO ainda estiver ausente, marque **Instalar o Equalizer APO** na última tela do Setup. O Windows pede permissão de administrador para essa etapa. Depois da autorização, o Setup extrai o instalador do APO em uma pasta temporária protegida e confere seu SHA-256 antes de abri-lo. O instalador oficial desativa o modo protegido do mecanismo de áudio para carregar o efeito. Essa configuração vale para o sistema todo. Para instalar sem internet, desmarque a procura automática por atualizações no instalador do Equalizer APO.
+## Configuração rápida do EQ em LIGHTSPEED
 
-Conecte o receptor, ligue o fone em LIGHTSPEED e habilite o APO somente na saída de reprodução do G321 pelo **Equalizer APO Device Selector**. Se o APO já estiver instalado, abra o Device Selector pelo menu Iniciar. Reinicie se o instalador solicitar.
+1. **Conecte o receptor USB** e ligue o G321 em LIGHTSPEED.
+2. **Abra o instalador** na conta do Windows que vai usar o app. Se o Equalizer APO ainda estiver ausente, marque **Instalar o Equalizer APO (requer administrador)** na última tela e conclua a instalação.
+3. **Habilite o efeito na saída do G321.** No **Equalizer APO Device Selector**, marque apenas **Fones de ouvido (G321 LIGHTSPEED)** na lista de reprodução. Se o seletor não abrir sozinho, procure-o no menu Iniciar. Reinicie se solicitado.
+4. **Selecione o G321 como saída** no Windows ou no jogo. Mantenha os **Aprimoramentos de áudio** habilitados nessa saída.
+5. **Abra o G321 Studio pela bandeja.** A chave do **Equalizador** deve indicar **Ligado**, com **Plano** selecionado automaticamente. Escolha **Jogos** ou **Graves** para ouvir a mudança.
 
-Mantenha os aprimoramentos de áudio habilitados e selecione o G321 como saída do Windows ou do jogo. Selecione um preset, arraste os pontos da curva ou use os controles circulares para ajustar as bandas. Ao editar uma banda ou o pré-amplificador, o app armazena os ajustes em **Personalizado**. O EQ também se aplica ao áudio do retorno de voz nessa saída. [Equalizer APO](https://sourceforge.net/projects/equalizerapo/)
+## Instalação e ajustes
+
+Para instalar sem internet, desmarque a procura automática por atualizações no instalador do Equalizer APO. O instalador oficial desativa o modo protegido do mecanismo de áudio do Windows para carregar o efeito. Essa configuração vale para o sistema todo. Depois da autorização, o Setup extrai o instalador do APO em uma pasta temporária protegida e confere seu SHA-256 antes de abri-lo. [Equalizer APO](https://sourceforge.net/projects/equalizerapo/)
+
+Mantenha selecionada a opção **Iniciar o G321 Studio na bandeja ao entrar no Windows** se quiser iniciar o app junto com o Windows. Antes de atualizar ou desinstalar, use **Sair** no menu da bandeja.
+
+Arraste os pontos da curva ou use os controles circulares para ajustar as bandas. Ao editar uma banda ou o pré-amplificador, o app armazena os ajustes em **Personalizado**. O EQ também se aplica ao áudio do retorno de voz nessa saída.
 
 ## Retorno de voz
 
