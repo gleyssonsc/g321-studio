@@ -1,0 +1,21 @@
+G321 Studio
+
+Independent, unofficial app for the Logitech G G321 LIGHTSPEED. G321 Studio is not affiliated with Logitech.
+
+Offline setup for Windows 10 (version 2004 or later) and Windows 11. Open Setup normally from the account that will use the app. The package includes the .NET runtime and the x64, x86 and ARM64 builds.
+
+Studio uses the language you choose at the start of Setup. To switch between Português (Brasil) and English, run Setup again and choose the other language.
+
+G321 Studio runs in the Windows notification area. Choose Exit from the notification area icon's menu before updating or uninstalling a running version.
+
+Equalizer over LIGHTSPEED
+
+If Equalizer APO is not installed, select “Install Equalizer APO (administrator required)” on the final page. The official installer is separate and displays its own screens in English or German. It requests administrator permission and disables Windows audio protected mode to load the effect. This setting applies system-wide.
+
+Connect the receiver, turn on the G321 in LIGHTSPEED mode, and select only the G321 LIGHTSPEED headphones in Equalizer APO Device Selector. Clear “Check for updates automatically” for an offline installation. Restart Windows if requested.
+
+If Equalizer APO is already installed, open Equalizer APO Device Selector from the Start menu and enable the effect for the G321 if needed. Keep audio enhancements enabled and select G321 LIGHTSPEED as the output device in Windows or in your game.
+
+Silent installation installs G321 Studio. Configure Equalizer APO through the interactive setup. Equalizer APO has its own entry in the Windows apps list and remains installed when you uninstall G321 Studio.
+
+Equalizer APO is a third-party component. Its corresponding source code and available license notices are in the Licenças folder under the installation directory.

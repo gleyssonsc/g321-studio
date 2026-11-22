@@ -102,7 +102,7 @@ internal sealed class DirectEqualizer
         try
         {
             if (!File.ReadAllBytes(configPath).AsSpan().SequenceEqual(originalConfig))
-                throw new IOException("A configuração do Equalizer APO mudou durante a atualização. Tente novamente.");
+                throw new IOException(StudioText.Get("RtApoChanged"));
             WriteAtomically(configPath, configured, destinationExists: true);
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
@@ -118,7 +118,7 @@ internal sealed class DirectEqualizer
                 }
                 catch (Exception rollbackError) when (rollbackError is IOException or UnauthorizedAccessException)
                 {
-                    throw new IOException("Não foi possível atualizar ou restaurar a configuração do EQ direto.",
+                    throw new IOException(StudioText.Get("RtApoRestoreFailed"),
                         new AggregateException(error, rollbackError));
                 }
             }
@@ -146,7 +146,7 @@ internal sealed class DirectEqualizer
         // APO reads UTF-8 and falls back to the Windows code page. Latin-1 is used here
         // to find ASCII markers without converting any bytes in the user's file.
         if (Array.IndexOf(original, (byte)0) >= 0)
-            throw new IOException("O arquivo config.txt do Equalizer APO precisa usar UTF-8 ou ANSI.");
+            throw new IOException(StudioText.Get("RtApoConfigEncoding"));
         string text = Encoding.Latin1.GetString(original);
         var blocks = IncludeBlock.Matches(text);
         if (blocks.Count == 1 && text.AsSpan(blocks[0].Index + blocks[0].Length).Trim().IsEmpty)
@@ -155,7 +155,7 @@ internal sealed class DirectEqualizer
         string newLine = text.Contains('\n') && !text.Contains("\r\n", StringComparison.Ordinal) ? "\n" : "\r\n";
         string userConfig = IncludeBlock.Replace(text, "");
         if (userConfig.Split('\n').Any(line => line.Trim().Equals(ManagedInclude, StringComparison.OrdinalIgnoreCase)))
-            throw new IOException("O arquivo config.txt já inclui g321-studio.txt fora do bloco gerenciado pelo app.");
+            throw new IOException(StudioText.Get("RtApoManagedIncludeConflict"));
         string separator = userConfig.Length != 0 && !userConfig.EndsWith('\n') ? newLine : "";
         string block = string.Join(newLine, BeginBlock, "Device: all", ManagedInclude, EndBlock, "");
         return Encoding.Latin1.GetBytes(userConfig + separator + block);

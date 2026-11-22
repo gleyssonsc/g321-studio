@@ -99,8 +99,7 @@ internal sealed class AudioRoute : IDisposable
                 (var source, var destination) when source == destination => samples,
                 (1, 2) => new MonoToStereoSampleProvider(samples),
                 (2, 1) => new StereoToMonoSampleProvider(samples),
-                _ => throw new NotSupportedException(
-                    "Use uma configuração mono ou estéreo nos dispositivos de áudio do Windows.")
+                _ => throw new NotSupportedException(StudioText.Get("RtAudioChannelsUnsupported"))
             };
             if (samples.WaveFormat.SampleRate != outputFormat.SampleRate)
                 samples = new WdlResamplingSampleProvider(samples, outputFormat.SampleRate);
@@ -148,12 +147,12 @@ internal sealed record EqParameters(float[] Gains, float Preamp)
 
     public static readonly Preset[] Presets =
     [
-        new("Plano", new float[Frequencies.Length], 0),
-        new("Graves", [5, 5, 4, 2, 0, 0, 0, 0, 0, 0], -6),
-        new("Voz clara", [-4, -3, -2, -1, 0, 2, 4, 3, 1, 0], -5),
-        new("Jogos", [-3, -3, -2, -1, 0, 1, 3, 4, 2, 0], -6),
-        new("Música", [3, 3, 2, 0, -1, 0, 1, 2, 3, 2], -5),
-        new("Personalizado", new float[Frequencies.Length], 0)
+        new("Plano", "RtPresetFlat", new float[Frequencies.Length], 0),
+        new("Graves", "RtPresetBass", [5, 5, 4, 2, 0, 0, 0, 0, 0, 0], -6),
+        new("Voz clara", "RtPresetClearVoice", [-4, -3, -2, -1, 0, 2, 4, 3, 1, 0], -5),
+        new("Jogos", "RtPresetGaming", [-3, -3, -2, -1, 0, 1, 3, 4, 2, 0], -6),
+        new("Música", "RtPresetMusic", [3, 3, 2, 0, -1, 0, 1, 2, 3, 2], -5),
+        new("Personalizado", "RtPresetCustom", new float[Frequencies.Length], 0)
     ];
 }
 

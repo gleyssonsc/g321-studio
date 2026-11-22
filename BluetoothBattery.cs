@@ -76,8 +76,8 @@ internal static class BluetoothBattery
         }
 
         return new BatteryReading(null, addresses.Count > 0
-            ? "G321 conectado por Bluetooth · nível indisponível"
-            : "Conecte o G321 por Bluetooth para consultar.");
+            ? StudioText.Get("RtBluetoothBatteryUnavailable")
+            : StudioText.Get("RtConnectBluetoothBattery"));
     }
 
     internal static bool IsG321(string? name) =>

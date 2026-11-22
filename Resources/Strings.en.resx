@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="RtApoChanged" xml:space="preserve">
+    <value>The Equalizer APO configuration changed during the update. Try again.</value>
+  </data>
+  <data name="RtApoConfigEncoding" xml:space="preserve">
+    <value>The Equalizer APO config.txt file must use UTF-8 or ANSI.</value>
+  </data>
+  <data name="RtApoManagedIncludeConflict" xml:space="preserve">
+    <value>The config.txt file already includes g321-studio.txt outside the block managed by the app.</value>
+  </data>
+  <data name="RtApoRestoreFailed" xml:space="preserve">
+    <value>Could not update or restore the direct EQ configuration.</value>
+  </data>
+  <data name="RtAudioChannelsUnsupported" xml:space="preserve">
+    <value>Choose mono or stereo for the Windows audio devices.</value>
+  </data>
+  <data name="RtAudioListFailed" xml:space="preserve">
+    <value>Could not list audio devices. {0}</value>
+  </data>
+  <data name="RtAutoEqAwaitingLightspeed" xml:space="preserve">
+    <value>Auto-enable · waiting for the G321 in LIGHTSPEED mode.</value>
+  </data>
+  <data name="RtAwaitingMicrophone" xml:space="preserve">
+    <value>Waiting for the G321 microphone.</value>
+  </data>
+  <data name="RtBandAutomationName" xml:space="preserve">
+    <value>{0} Hz band</value>
+  </data>
+  <data name="RtBandHelp" xml:space="preserve">
+    <value>Use the arrow keys to adjust gain in decibels.</value>
+  </data>
+  <data name="RtBandTooltip" xml:space="preserve">
+    <value>Drag to adjust. Double-click to reset to 0 dB.</value>
+  </data>
+  <data name="RtBatteryReadFailed" xml:space="preserve">
+    <value>Could not read the battery level.</value>
+  </data>
+  <data name="RtBluetoothBatteryUnavailable" xml:space="preserve">
+    <value>G321 connected via Bluetooth · battery level unavailable</value>
+  </data>
+  <data name="RtConnectBluetoothBattery" xml:space="preserve">
+    <value>Connect the G321 via Bluetooth to check its battery.</value>
+  </data>
+  <data name="RtDefaultOutputNotice" xml:space="preserve">
+    <value>Default output: {0}. Select the G321 in Windows or in the game.</value>
+  </data>
+  <data name="RtDirectEqStartFailed" xml:space="preserve">
+    <value>Could not start direct EQ. {0}</value>
+  </data>
+  <data name="RtDirectEqStopFailed" xml:space="preserve">
+    <value>Could not stop direct EQ. {0}</value>
+  </data>
+  <data name="RtDirectEqUpdateFailed" xml:space="preserve">
+    <value>Could not update direct EQ. {0}</value>
+  </data>
+  <data name="RtEnableEqualizerApo" xml:space="preserve">
+    <value>Enable Equalizer APO on the G321 LIGHTSPEED output and turn on Windows audio enhancements.</value>
+  </data>
+  <data name="RtEqGainCount" xml:space="preserve">
+    <value>A value is required for each equalizer band.</value>
+  </data>
+  <data name="RtLightspeedBatteryUnavailable" xml:space="preserve">
+    <value>LIGHTSPEED receiver detected · battery level unavailable</value>
+  </data>
+  <data name="RtOff" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="RtOn" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="RtPresetBass" xml:space="preserve">
+    <value>Bass</value>
+  </data>
+  <data name="RtPresetClearVoice" xml:space="preserve">
+    <value>Clear voice</value>
+  </data>
+  <data name="RtPresetCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="RtPresetFlat" xml:space="preserve">
+    <value>Flat</value>
+  </data>
+  <data name="RtPresetGaming" xml:space="preserve">
+    <value>Gaming</value>
+  </data>
+  <data name="RtPresetMusic" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="RtSelectLightspeedOutput" xml:space="preserve">
+    <value>Select G321 LIGHTSPEED as the output in Windows or in the game, then turn on the EQ.</value>
+  </data>
+  <data name="RtSidetoneDeviceMismatch" xml:space="preserve">
+    <value>Choose the microphone and audio output from the same G321.</value>
+  </data>
+  <data name="RtSidetoneInterrupted" xml:space="preserve">
+    <value>Sidetone stopped. {0}</value>
+  </data>
+  <data name="RtSidetoneStartFailed" xml:space="preserve">
+    <value>Could not start sidetone. {0}</value>
+  </data>
+  <data name="RtSidetoneVolumeIndependence" xml:space="preserve">
+    <value>Sidetone volume is independent of microphone gain.</value>
+  </data>
+  <data name="RtSoundSettingsOpenFailed" xml:space="preserve">
+    <value>Could not open sound settings. {0}</value>
+  </data>
+  <data name="RtTrayExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="RtTrayIconNotFound" xml:space="preserve">
+    <value>The G321 Studio icon could not be found.</value>
+  </data>
+  <data name="RtTrayOpen" xml:space="preserve">
+    <value>Open G321 Studio</value>
+  </data>
+  <data name="UiAudioOutput" xml:space="preserve">
+    <value>Audio output</value>
+  </data>
+  <data name="UiBattery" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="UiCheckingBattery" xml:space="preserve">
+    <value>Checking…</value>
+  </data>
+  <data name="UiEqualizer" xml:space="preserve">
+    <value>Equalizer</value>
+  </data>
+  <data name="UiEqualizerPreset" xml:space="preserve">
+    <value>Equalizer preset</value>
+  </data>
+  <data name="UiEqualizerToggleHelp" xml:space="preserve">
+    <value>Turn the equalizer on or off</value>
+  </data>
+  <data name="UiG321AudioOutput" xml:space="preserve">
+    <value>G321 audio output</value>
+  </data>
+  <data name="UiG321BatteryPercentage" xml:space="preserve">
+    <value>G321 battery percentage</value>
+  </data>
+  <data name="UiG321Microphone" xml:space="preserve">
+    <value>G321 microphone</value>
+  </data>
+  <data name="UiG321Unavailable" xml:space="preserve">
+    <value>G321 unavailable</value>
+  </data>
+  <data name="UiMicrophone" xml:space="preserve">
+    <value>Microphone</value>
+  </data>
+  <data name="UiMicrophoneUnavailable" xml:space="preserve">
+    <value>No microphone</value>
+  </data>
+  <data name="UiPreamp" xml:space="preserve">
+    <value>Preamp</value>
+  </data>
+  <data name="UiPreampDecibels" xml:space="preserve">
+    <value>Preamp in decibels</value>
+  </data>
+  <data name="UiPreset" xml:space="preserve">
+    <value>Preset</value>
+  </data>
+  <data name="UiRefreshDevices" xml:space="preserve">
+    <value>Refresh devices</value>
+  </data>
+  <data name="UiSidetone" xml:space="preserve">
+    <value>Sidetone</value>
+  </data>
+  <data name="UiSidetoneToggleHelp" xml:space="preserve">
+    <value>Turn sidetone on or off</value>
+  </data>
+  <data name="UiSidetoneVolumePercentage" xml:space="preserve">
+    <value>Sidetone volume percentage</value>
+  </data>
+  <data name="UiVolume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="UiWindowsSoundSettings" xml:space="preserve">
+    <value>Windows sound settings</value>
+  </data>
+</root>

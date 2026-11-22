@@ -16,16 +16,16 @@
 [Setup]
 AppId={{653ED62E-C65F-4D37-BBF7-8B55A029516D}
 AppName=G321 Studio
-AppVersion=1.0.2
+AppVersion=1.0.3
 DefaultDirName={localappdata}\Programs\G321 Studio
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\{#StudioExe}
 SetupIconFile=..\Assets\G321.ico
-VersionInfoDescription=Instalador offline do G321 Studio
+VersionInfoDescription=G321 Studio
 OutputDir={#OutputFolder}
 OutputBaseFilename=G321 Studio Setup
-InfoBeforeFile=SetupInfo.txt
+ShowLanguageDialog=yes
 Compression=lzma2
 SolidCompression=no
 MinVersion=10.0.19041
@@ -36,10 +36,40 @@ CloseApplications=no
 RestartApplications=no
 
 [Languages]
-Name: "ptbr"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
+Name: "ptbr"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"; InfoBeforeFile: "SetupInfo.txt"
+Name: "en"; MessagesFile: "compiler:Default.isl"; InfoBeforeFile: "SetupInfo.en.txt"
+
+[LangOptions]
+ptbr.LanguageName=Português (Brasil)
+
+[CustomMessages]
+ptbr.AppLanguage=pt-BR
+en.AppLanguage=en-US
+ptbr.StartupTask=Iniciar o G321 Studio na bandeja ao entrar no Windows
+en.StartupTask=Start G321 Studio in the notification area when you sign in to Windows
+ptbr.InstallApo=Instalar o Equalizer APO (requer administrador)
+en.InstallApo=Install Equalizer APO (administrator required)
+ptbr.LaunchStudio=Iniciar o G321 Studio na bandeja
+en.LaunchStudio=Start G321 Studio in the notification area
+ptbr.StartupCheckFailed=Não foi possível verificar o atalho existente da Inicialização.
+en.StartupCheckFailed=Could not verify the existing Startup shortcut.
+ptbr.ApoProtectedTempRequired=A pasta temporária do Equalizer APO precisa estar em um volume local com permissões de acesso.
+en.ApoProtectedTempRequired=The Equalizer APO temporary folder must be on a local volume with access controls.
+ptbr.ApoIntegrityFailed=A verificação de integridade do instalador do Equalizer APO falhou.
+en.ApoIntegrityFailed=The Equalizer APO installer failed its integrity check.
+ptbr.ApoHashVerified=SHA-256 do instalador Equalizer APO verificado.
+en.ApoHashVerified=Equalizer APO installer SHA-256 verified.
+ptbr.ApoTempConfigFailed=Não foi possível configurar a pasta temporária do instalador do Equalizer APO.
+en.ApoTempConfigFailed=Could not configure the Equalizer APO installer temporary folder.
+ptbr.ApoLaunchFailed=Não foi possível abrir o instalador do Equalizer APO (erro do Windows %1).
+en.ApoLaunchFailed=Could not open the Equalizer APO installer (Windows error %1).
+ptbr.ApoElevationRequired=Etapa do Equalizer APO recusada sem elevação.
+en.ApoElevationRequired=Equalizer APO installation was refused without elevation.
+ptbr.RunSetupAsUser=Abra o instalador normalmente na conta que vai usar o G321 Studio.
+en.RunSetupAsUser=Open Setup normally from the account that will use G321 Studio.
 
 [Tasks]
-Name: "startup"; Description: "Iniciar o G321 Studio na bandeja ao entrar no Windows"
+Name: "startup"; Description: "{cm:StartupTask}"
 
 [Files]
 Source: "{#PayloadRoot}\app\x64\{#StudioExe}"; DestDir: "{app}"; Flags: ignoreversion; Check: IsX64OS
@@ -50,7 +80,11 @@ Source: "{#PayloadRoot}\vendor\{#ApoX86}"; Flags: dontcopy
 Source: "{#PayloadRoot}\vendor\{#ApoArm64}"; Flags: dontcopy
 Source: "{#PayloadRoot}\vendor\EqualizerAPO-src-1.4.2.zip"; DestDir: "{app}\Licenças"; Flags: ignoreversion
 Source: "{#PayloadRoot}\notices\*"; DestDir: "{app}\Licenças"; Flags: ignoreversion
-Source: "SetupInfo.txt"; DestDir: "{app}"; DestName: "Como configurar.txt"; Flags: ignoreversion
+Source: "SetupInfo.txt"; DestDir: "{app}"; DestName: "G321 Studio.txt"; Flags: ignoreversion; Languages: ptbr
+Source: "SetupInfo.en.txt"; DestDir: "{app}"; DestName: "G321 Studio.txt"; Flags: ignoreversion; Languages: en
+
+[Registry]
+Root: HKCU; Subkey: "Software\G321 Studio"; ValueType: string; ValueName: "Language"; ValueData: "{cm:AppLanguage}"; Flags: uninsdeletevalue uninsdeletekeyifempty
 
 [Icons]
 Name: "{userprograms}\G321 Studio"; Filename: "{app}\{#StudioExe}"; WorkingDir: "{app}"
@@ -58,15 +92,17 @@ Name: "{userstartup}\G321 Studio"; Filename: "{app}\{#StudioExe}"; Parameters: "
 
 [InstallDelete]
 Type: files; Name: "{userstartup}\G321 Studio.lnk"; Tasks: not startup; Check: IsManagedStartupShortcut
+Type: files; Name: "{app}\Como configurar.txt"; Check: IsUnchangedLegacyGuide
 
 [Run]
-Filename: "{srcexe}"; Parameters: "{code:ApoElevationArguments}"; WorkingDir: "{sys}"; Verb: "runas"; Description: "Instalar o Equalizer APO (requer administrador)"; Flags: postinstall unchecked skipifsilent shellexec waituntilterminated; Check: IsApoMissing
-Filename: "{app}\{#StudioExe}"; Description: "Iniciar o G321 Studio na bandeja"; WorkingDir: "{app}"; Flags: postinstall nowait skipifsilent runasoriginaluser; Check: CanStartStudio
+Filename: "{srcexe}"; Parameters: "{code:ApoElevationArguments}"; WorkingDir: "{sys}"; Verb: "runas"; Description: "{cm:InstallApo}"; Flags: postinstall unchecked skipifsilent shellexec waituntilterminated; Check: IsApoMissing
+Filename: "{app}\{#StudioExe}"; Description: "{cm:LaunchStudio}"; WorkingDir: "{app}"; Flags: postinstall nowait skipifsilent runasoriginaluser; Check: CanStartStudio
 
 [Code]
 const
   DriveFixed = 3;
   FilePersistentAcls = $00000008;
+  LegacyGuideHash = '2D7281BD04E1743B5786ADC86F35188F7F95C34EFDBCA547FA78D3D5D9E399F9';
 
 var
   SourceInstaller: TFileStream;
@@ -97,7 +133,24 @@ begin
     Result := CompareText(Shell.CreateShortcut(ShortcutPath).TargetPath,
       ExpandConstant('{app}\{#StudioExe}')) = 0;
   except
-    Log('Não foi possível verificar o atalho existente da Inicialização.');
+    Log(CustomMessage('StartupCheckFailed'));
+  end;
+end;
+
+function IsUnchangedLegacyGuide: Boolean;
+var
+  Guide: String;
+begin
+  Result := False;
+  Guide := ExpandConstant('{app}\Como configurar.txt');
+  if not FileExists(Guide) then
+    Exit;
+
+  try
+    // Remove only the original guide from v1.0.1 and v1.0.2, keeping user edits.
+    Result := CompareText(GetSHA256OfFile(Guide), LegacyGuideHash) = 0;
+  except
+    Result := False;
   end;
 end;
 
@@ -121,7 +174,7 @@ end;
 
 function ApoElevationArguments(Param: String): String;
 begin
-  Result := '/INSTALLG321APO /SP-';
+  Result := '/INSTALLG321APO /SP- /LANG=' + ActiveLanguage;
   if ExpandConstant('{log}') <> '' then
     Result := Result + ' /LOG';
 end;
@@ -169,7 +222,7 @@ begin
   // Inno restricts writes to this directory for elevated Setup on local volumes with ACLs.
   TempPath := ExpandConstant('{tmp}');
   if not HasProtectedTempVolume(TempPath) then
-    RaiseException('A pasta temporária do Equalizer APO precisa estar em um volume local com permissões de acesso.');
+    RaiseException(CustomMessage('ApoProtectedTempRequired'));
 
   ExtractTemporaryFile(InstallerName);
   InstallerPath := AddBackslash(TempPath) + InstallerName;
@@ -177,13 +230,13 @@ begin
   Installer := TFileStream.Create(InstallerPath, fmOpenRead or fmShareDenyWrite);
   try
     if CompareText(GetSHA256OfStream(Installer), ExpectedHash) <> 0 then
-      RaiseException('A verificação de integridade do instalador do Equalizer APO falhou.');
-    Log('SHA-256 do instalador Equalizer APO verificado.');
+      RaiseException(CustomMessage('ApoIntegrityFailed'));
+    Log(CustomMessage('ApoHashVerified'));
     // The vendor installer also extracts its own temporary files.
     if not SetEnvironmentVariable('TEMP', TempPath) or not SetEnvironmentVariable('TMP', TempPath) then
-      RaiseException('Não foi possível configurar a pasta temporária do instalador do Equalizer APO.');
+      RaiseException(CustomMessage('ApoTempConfigFailed'));
     if not Exec(InstallerPath, '', TempPath, SW_SHOWNORMAL, ewWaitUntilTerminated, ReturnCode) then
-      RaiseException('Não foi possível abrir o instalador do Equalizer APO. ' + SysErrorMessage(ReturnCode));
+      RaiseException(FmtMessage(CustomMessage('ApoLaunchFailed'), [IntToStr(ReturnCode)]));
   finally
     Installer.Free;
   end;
@@ -199,7 +252,7 @@ begin
     begin
       if not IsAdmin then
       begin
-        Log('Etapa do Equalizer APO recusada sem elevação.');
+        Log(CustomMessage('ApoElevationRequired'));
         Exit;
       end;
       try
@@ -213,7 +266,7 @@ begin
 
   if IsAdmin then
   begin
-    SuppressibleMsgBox('Abra o instalador normalmente na conta que vai usar o G321 Studio.', mbInformation, MB_OK, IDOK);
+    SuppressibleMsgBox(CustomMessage('RunSetupAsUser'), mbInformation, MB_OK, IDOK);
     Exit;
   end;
 

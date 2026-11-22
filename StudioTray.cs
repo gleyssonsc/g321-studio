@@ -13,7 +13,7 @@ internal sealed class StudioTray : IDisposable
     public StudioTray(Action open, Action exit)
     {
         var resource = WpfApplication.GetResourceStream(new Uri("/Assets/G321.ico", UriKind.Relative))
-            ?? throw new InvalidOperationException("O ícone do G321 Studio não foi encontrado.");
+            ?? throw new InvalidOperationException(StudioText.Get("RtTrayIconNotFound"));
         using var stream = resource.Stream;
         using var asset = new Drawing.Icon(stream);
         image = (Drawing.Icon)asset.Clone();
@@ -23,8 +23,8 @@ internal sealed class StudioTray : IDisposable
         try
         {
             createdMenu = new Forms.ContextMenuStrip();
-            createdMenu.Items.Add("Abrir G321 Studio", null, (_, _) => open());
-            createdMenu.Items.Add("Sair", null, (_, _) => exit());
+            createdMenu.Items.Add(StudioText.Get("RtTrayOpen"), null, (_, _) => open());
+            createdMenu.Items.Add(StudioText.Get("RtTrayExit"), null, (_, _) => exit());
 
             createdIcon = new Forms.NotifyIcon();
             createdIcon.Icon = image;

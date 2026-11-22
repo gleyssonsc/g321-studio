@@ -22,8 +22,6 @@ public partial class MainWindow : Window
     private float monitorGain;
     private DirectEqualizer? directEq;
     private AudioRoute? monitorRoute;
-    private (string MicId, string OutputId)? approvedMonitorPair;
-    private bool confirmingMonitor;
     private bool syncing = true;
     private bool syncingSwitches;
     private bool refreshing;
@@ -74,11 +72,11 @@ public partial class MainWindow : Window
                 IsSnapToTickEnabled = true,
                 Orientation = Orientation.Vertical,
                 Margin = new Thickness(0, 2, 0, 2),
-                ToolTip = "Arraste para ajustar. Clique duas vezes para voltar a 0 dB.",
+                ToolTip = StudioText.Get("RtBandTooltip"),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
-            AutomationProperties.SetName(slider, $"Banda de {frequency} hertz");
-            AutomationProperties.SetHelpText(slider, "Use as setas para ajustar o ganho em decibéis.");
+            AutomationProperties.SetName(slider, StudioText.Format("RtBandAutomationName", frequency));
+            AutomationProperties.SetHelpText(slider, StudioText.Get("RtBandHelp"));
             slider.ValueChanged += EqualizerChanged;
 
             var value = new TextBlock
@@ -151,15 +149,11 @@ public partial class MainWindow : Window
 
             if (OutputChoice.SelectedItem is Endpoint oldOutput && !headphones.Any(e => e.Id == oldOutput.Id))
             {
-                approvedMonitorPair = null;
                 StopEq();
                 StopMonitor();
             }
             if (MicChoice.SelectedItem is Endpoint oldMic && !mics.Any(e => e.Id == oldMic.Id))
-            {
-                approvedMonitorPair = null;
                 StopMonitor();
-            }
 
             UpdateEndpoints(OutputChoice, headphones, preferences.OutputId);
             UpdateEndpoints(MicChoice, mics, preferences.MicId);
@@ -167,7 +161,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            eqError = monitorError = $"Falha ao listar áudio. {ex.Message}";
+            eqError = monitorError = StudioText.Format("RtAudioListFailed", ex.Message);
         }
         finally
         {
@@ -182,7 +176,7 @@ public partial class MainWindow : Window
 
     private async Task TryStartAutomaticEqAsync()
     {
-        if (!autoEq || checkingLightspeed || directEq is not null || confirmingMonitor)
+        if (!autoEq || checkingLightspeed || directEq is not null)
             return;
 
         if (OutputChoice.ItemsSource is not Endpoint[] outputs)
@@ -199,7 +193,7 @@ public partial class MainWindow : Window
                 .OrderByDescending(output => output.Id == preferredOutput)
                 .FirstOrDefault(output => LightspeedConnection.HeadsetResponds(output.Id)));
             if (headset is null || lifetime.IsCancellationRequested || !autoEq ||
-                directEq is not null || confirmingMonitor ||
+                directEq is not null ||
                 (monitorRoute is not null && !Equals(OutputChoice.SelectedItem, headset)) ||
                 !OutputChoice.Items.Contains(headset))
                 return;
@@ -222,7 +216,7 @@ public partial class MainWindow : Window
             return;
 
         batteryReading = true;
-        const string receiverUnavailable = "Receptor LIGHTSPEED detectado · nível indisponível";
+        string receiverUnavailable = StudioText.Get("RtLightspeedBatteryUnavailable");
         bool receiverPresent = false;
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
         timeout.CancelAfter(TimeSpan.FromSeconds(8));
@@ -247,7 +241,7 @@ public partial class MainWindow : Window
             {
                 ShowBattery(null, receiverPresent
                     ? receiverUnavailable
-                    : "Não foi possível consultar a bateria.");
+                    : StudioText.Get("RtBatteryReadFailed"));
             }
         }
         finally
@@ -296,7 +290,6 @@ public partial class MainWindow : Window
         if (syncing)
             return;
 
-        approvedMonitorPair = null;
         preferences.OutputId = (OutputChoice.SelectedItem as Endpoint)?.Id;
         preferences.MicId = (MicChoice.SelectedItem as Endpoint)?.Id;
         eqError = monitorError = null;
@@ -392,7 +385,7 @@ public partial class MainWindow : Window
             var effect = LightspeedConnection.IsReceiverEndpoint(output.Id) ? DirectEqualizer.For(output) : null;
             if (effect is null)
             {
-                eqError = "Ative o Equalizer APO na saída do G321 LIGHTSPEED e habilite os aprimoramentos de áudio do Windows.";
+                eqError = StudioText.Get("RtEnableEqualizerApo");
                 return;
             }
 
@@ -401,7 +394,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            eqError = $"Falha ao iniciar o EQ direto. {ex.Message}";
+            eqError = StudioText.Format("RtDirectEqStartFailed", ex.Message);
         }
     }
 
@@ -418,14 +411,14 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            eqError = $"Falha ao atualizar o EQ direto. {ex.Message}";
+            eqError = StudioText.Format("RtDirectEqUpdateFailed", ex.Message);
         }
         UpdateAudioStatus();
     }
 
     private void ToggleMonitor(object sender, RoutedEventArgs args)
     {
-        if (syncing || syncingSwitches || confirmingMonitor)
+        if (syncing || syncingSwitches || lifetime.IsCancellationRequested)
             return;
 
         monitorError = null;
@@ -437,56 +430,18 @@ public partial class MainWindow : Window
         {
             try
             {
-                if (ApproveMonitorPair(mic, output))
+                if (LightspeedConnection.ShareReceiver(mic.Id, output.Id) ||
+                    LightspeedConnection.ShareBluetoothAudioDevice(mic.Id, output.Id))
                     StartMonitor(mic, output);
+                else
+                    monitorError = StudioText.Get("RtSidetoneDeviceMismatch");
             }
             catch (Exception ex)
             {
-                monitorError = $"Falha ao iniciar o retorno. {ex.Message}";
+                monitorError = StudioText.Format("RtSidetoneStartFailed", ex.Message);
             }
         }
         UpdateAudioStatus();
-    }
-
-    private bool ApproveMonitorPair(Endpoint mic, Endpoint output)
-    {
-        string? connection = GetMonitorConnection(mic, output);
-        if (connection is null)
-        {
-            monitorError = "Escolha o microfone e a saída do mesmo G321.";
-            return false;
-        }
-
-        var pair = (mic.Id, output.Id);
-        if (approvedMonitorPair == pair)
-            return true;
-
-        confirmingMonitor = true;
-        try
-        {
-            string micName = string.Join(" ", mic.Name.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
-            string outputName = string.Join(" ", output.Name.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
-            string message = $"Microfone: {micName}\nSaída: {outputName}\nConexão: {connection}\n\nAtivar o retorno de voz nesse par?";
-            if (MessageBox.Show(this, message, "Confirmar retorno de voz",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes ||
-                lifetime.IsCancellationRequested || !Equals(MicChoice.SelectedItem, mic) ||
-                !Equals(OutputChoice.SelectedItem, output) || GetMonitorConnection(mic, output) != connection)
-                return false;
-
-            approvedMonitorPair = pair;
-            return true;
-        }
-        finally
-        {
-            confirmingMonitor = false;
-        }
-    }
-
-    private static string? GetMonitorConnection(Endpoint mic, Endpoint output)
-    {
-        if (LightspeedConnection.ShareReceiver(mic.Id, output.Id))
-            return "LIGHTSPEED";
-        return LightspeedConnection.ShareBluetoothAudioDevice(mic.Id, output.Id) ? "Bluetooth" : null;
     }
 
     private void StartMonitor(Endpoint mic, Endpoint output)
@@ -497,9 +452,8 @@ public partial class MainWindow : Window
             {
                 if (route is null || lifetime.IsCancellationRequested || !ReferenceEquals(route, monitorRoute))
                     return;
-                approvedMonitorPair = null;
                 StopMonitor();
-                monitorError = $"Retorno interrompido. {error.Message}";
+                monitorError = StudioText.Format("RtSidetoneInterrupted", error.Message);
                 UpdateAudioStatus();
             }));
         monitorRoute = route;
@@ -515,7 +469,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            eqError = $"Falha ao parar o EQ direto. {ex.Message}";
+            eqError = StudioText.Format("RtDirectEqStopFailed", ex.Message);
             return false;
         }
 
@@ -542,8 +496,8 @@ public partial class MainWindow : Window
         syncingSwitches = false;
         EqSwitch.IsEnabled = eqActive || hasOutput;
         MonitorSwitch.IsEnabled = monitorActive || hasOutput && hasMic;
-        EqSwitchState.Text = eqActive ? "Ligado" : "Desligado";
-        MonitorSwitchState.Text = monitorActive ? "Ligado" : "Desligado";
+        EqSwitchState.Text = StudioText.Get(eqActive ? "RtOn" : "RtOff");
+        MonitorSwitchState.Text = StudioText.Get(monitorActive ? "RtOn" : "RtOff");
         EqSwitchState.Foreground = (Brush)FindResource(eqActive ? "Accent" : "Quiet");
         MonitorSwitchState.Foreground = (Brush)FindResource(monitorActive ? "Accent" : "Quiet");
         OutputChoice.IsEnabled = !eqActive && !monitorActive;
@@ -554,18 +508,18 @@ public partial class MainWindow : Window
         EqStatus.Text = eqStatus ?? "";
         EqStatus.Visibility = eqStatus is null ? Visibility.Collapsed : Visibility.Visible;
         MonitorStatus.Text = monitorError ?? (monitorActive
-            ? "O volume do retorno é independente do ganho do microfone."
-            : hasMic ? "" : "Aguardando o microfone do G321.");
+            ? StudioText.Get("RtSidetoneVolumeIndependence")
+            : hasMic ? "" : StudioText.Get("RtAwaitingMicrophone"));
         MonitorStatus.Visibility = string.IsNullOrEmpty(MonitorStatus.Text) ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private string GetInactiveEqStatus() => autoEq
-        ? "Ativação automática · aguardando o G321 em LIGHTSPEED."
-        : "Selecione o G321 LIGHTSPEED como saída no Windows ou no jogo e inicie o EQ.";
+        ? StudioText.Get("RtAutoEqAwaitingLightspeed")
+        : StudioText.Get("RtSelectLightspeedOutput");
 
     private string? GetActiveEqNotice() =>
         defaultPlayback is { } current && (OutputChoice.SelectedItem as Endpoint)?.Id != current.Id
-            ? $"Saída padrão: {current.Name}. Selecione o G321 no Windows ou no jogo."
+            ? StudioText.Format("RtDefaultOutputNotice", current.Name)
             : null;
 
     private void OpenSoundSettings(object sender, RoutedEventArgs args)
@@ -576,7 +530,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            eqError = $"Falha ao abrir as configurações. {ex.Message}";
+            eqError = StudioText.Format("RtSoundSettingsOpenFailed", ex.Message);
             UpdateAudioStatus();
         }
     }

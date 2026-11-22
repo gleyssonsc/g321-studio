@@ -2,9 +2,9 @@
 
 Aplicativo independente e não oficial para uso com o headset Logitech G G321 LIGHTSPEED. Oferece equalizador de 10 bandas com presets, retorno de voz com volume ajustável e leitura da porcentagem de bateria. O projeto é mantido sem afiliação, patrocínio ou endosso da Logitech. [Headset compatível](https://www.logitechg.com/pt-br/shop/p/g321.981-001562)
 
-[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.2/G321-Studio-Setup-1.0.2.exe)
+[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.3/G321-Studio-Setup-1.0.3.exe)
 
-Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.2](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.2)
+Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.3](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.3)
 
 ![G321 Studio com o ícone da Logitech, headset em LIGHTSPEED, bateria em 79% e equalizador ligado](docs/interface.png)
 
@@ -20,6 +20,8 @@ Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as ver
 
 ## Instalação e ajustes
 
+No instalador 1.0.3, escolha **Português (Brasil)** ou **English**. Essa escolha define o idioma do Setup e do Studio para a conta do Windows usada na instalação. Para mudar de idioma, abra o Setup novamente e selecione a outra opção. O instalador opcional do Equalizer APO oferece inglês e alemão.
+
 Para instalar sem internet, desmarque a procura automática por atualizações no instalador do Equalizer APO. O instalador oficial desativa o modo protegido do mecanismo de áudio do Windows para carregar o efeito. Essa configuração vale para o sistema todo. Depois da autorização, o Setup extrai o instalador do APO em uma pasta temporária protegida e confere seu SHA-256 antes de abri-lo. [Equalizer APO](https://sourceforge.net/projects/equalizerapo/)
 
 Mantenha selecionada a opção **Iniciar o G321 Studio na bandeja ao entrar no Windows** se quiser iniciar o app junto com o Windows. Antes de atualizar ou desinstalar, use **Sair** no menu da bandeja.
@@ -28,7 +30,7 @@ Arraste os pontos da curva ou use os controles circulares para ajustar as bandas
 
 ## Retorno de voz
 
-Escolha a saída e o microfone do G321. Ao ligar a chave do retorno, confirme o par de dispositivos e ajuste o volume. Em LIGHTSPEED, ambos precisam pertencer ao mesmo receptor USB. A confirmação vale na sessão atual até você trocar de dispositivo ou o app detectar que o par foi desconectado. A opção **Sair** na bandeja encerra o retorno.
+Escolha a saída e o microfone do G321, ligue a chave **Retorno de voz** e ajuste o volume. Em LIGHTSPEED, ambos precisam pertencer ao mesmo receptor USB. A desconexão de um dos dispositivos ou a opção **Sair** na bandeja encerra o retorno.
 
 ## Bandeja e ativação automática
 
@@ -44,7 +46,7 @@ A leitura é atualizada automaticamente e pode ser solicitada em **Atualizar dis
 
 ## Privacidade
 
-O retorno de voz usa o microfone após sua confirmação e mantém o áudio em memória para reprodução local. O G321 Studio não grava nem transmite esse áudio. O app guarda as preferências de EQ, o volume do retorno e os identificadores dos dispositivos de áudio selecionados em `%LOCALAPPDATA%\G321 Studio\settings.json`.
+O retorno de voz usa o microfone quando você liga a chave correspondente e mantém o áudio em memória para reprodução local. O G321 Studio não grava nem transmite esse áudio. O app guarda as preferências de EQ, o volume do retorno e os identificadores dos dispositivos de áudio selecionados em `%LOCALAPPDATA%\G321 Studio\settings.json`.
 
 Ao relatar um problema, oculte nomes de usuário, caminhos pessoais, números de série e identificadores de dispositivos antes de compartilhar registros, capturas de tela ou diagnósticos.
 

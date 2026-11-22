@@ -3,9 +3,9 @@ using System.Text.Json;
 
 namespace G321Studio;
 
-internal sealed record Preset(string Name, float[] Gains, float Preamp)
+internal sealed record Preset(string Name, string LabelKey, float[] Gains, float Preamp)
 {
-    public override string ToString() => Name;
+    public override string ToString() => StudioText.Get(LabelKey);
 }
 
 internal sealed class Settings

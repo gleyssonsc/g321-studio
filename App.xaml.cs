@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Markup;
 
 [assembly: DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 
@@ -23,7 +25,11 @@ public partial class App : Application
         }
         instance = mutex;
 
-        var window = new MainWindow(autoEq: true);
+        StudioText.Initialize();
+        var window = new MainWindow(autoEq: true)
+        {
+            Language = XmlLanguage.GetLanguage(CultureInfo.CurrentUICulture.IetfLanguageTag)
+        };
         MainWindow = window;
         window.Closing += (_, args) =>
         {

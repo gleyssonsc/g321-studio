@@ -40,7 +40,7 @@ public sealed class EqualizerGraph : FrameworkElement
     internal void SetGains(float[] values)
     {
         if (values.Length != gains.Length)
-            throw new ArgumentException("Uma leitura é necessária para cada banda do equalizador.", nameof(values));
+            throw new ArgumentException(StudioText.Get("RtEqGainCount"), nameof(values));
 
         for (int band = 0; band < gains.Length; band++)
             gains[band] = float.IsFinite(values[band]) ? Math.Clamp(values[band], MinimumGain, MaximumGain) : 0;

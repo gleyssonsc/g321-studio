@@ -328,12 +328,12 @@
                     <TextBlock Text="G321 Studio" FontSize="29" FontWeight="Bold" VerticalAlignment="Center"/>
                 </StackPanel>
                 <Button Grid.Column="1" VerticalAlignment="Center" Click="RefreshClicked"
-                        AutomationProperties.Name="Atualizar dispositivos">
+                        AutomationProperties.Name="{local:Text UiRefreshDevices}">
                     <StackPanel Orientation="Horizontal">
                         <Path Data="M 13 3 L 13 7 L 9 7 M 12.7 6.7 A 5.2 5.2 0 1 0 13 10"
                               Stroke="{StaticResource Accent}" StrokeThickness="1.4"
                               Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,7,0"/>
-                        <TextBlock Text="Atualizar dispositivos" VerticalAlignment="Center"/>
+                        <TextBlock Text="{local:Text UiRefreshDevices}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </Grid>
@@ -352,25 +352,25 @@
                             <ColumnDefinition Width="148"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,14,0">
-                            <TextBlock Text="Saída de áudio" Style="{StaticResource FieldLabel}"/>
-                            <ComboBox x:Name="OutputChoice" Tag="G321 indisponível"
+                            <TextBlock Text="{local:Text UiAudioOutput}" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox x:Name="OutputChoice" Tag="{local:Text UiG321Unavailable}"
                                       ItemTemplate="{StaticResource EndpointName}"
                                       ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}"
                                       ToolTipService.ShowOnDisabled="True"
-                                      AutomationProperties.Name="Saída de áudio do G321"
+                                      AutomationProperties.Name="{local:Text UiG321AudioOutput}"
                                       SelectionChanged="DeviceSelectionChanged"/>
                         </StackPanel>
                         <Border Grid.Column="1" BorderBrush="{StaticResource Outline}" BorderThickness="1,0,0,0"
                                 Padding="13,0,0,0">
                             <StackPanel VerticalAlignment="Center">
                                 <Grid>
-                                    <TextBlock Text="Bateria" Style="{StaticResource FieldLabel}" Margin="0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{local:Text UiBattery}" Style="{StaticResource FieldLabel}" Margin="0" VerticalAlignment="Center"/>
                                     <TextBlock x:Name="BatteryValue" Text="—" FontSize="22" FontWeight="SemiBold"
                                                HorizontalAlignment="Right" Foreground="{StaticResource Accent}"
                                                AutomationProperties.LiveSetting="Polite"/>
                                 </Grid>
                                 <ProgressBar x:Name="BatteryProgress" Maximum="100" Height="5" Margin="0,4,0,0"
-                                             Visibility="Hidden" Focusable="False" AutomationProperties.Name="Porcentagem da bateria do G321"
+                                             Visibility="Hidden" Focusable="False" AutomationProperties.Name="{local:Text UiG321BatteryPercentage}"
                                              Background="{StaticResource Outline}" Foreground="{StaticResource Signal}">
                                     <ProgressBar.Template>
                                         <ControlTemplate TargetType="ProgressBar">
@@ -382,7 +382,7 @@
                                         </ControlTemplate>
                                     </ProgressBar.Template>
                                 </ProgressBar>
-                                <TextBlock x:Name="BatteryDetail" Text="Consultando…" Style="{StaticResource Caption}"
+                                <TextBlock x:Name="BatteryDetail" Text="{local:Text UiCheckingBattery}" Style="{StaticResource Caption}"
                                            FontSize="11" Margin="0,5,0,0"/>
                             </StackPanel>
                         </Border>
@@ -397,9 +397,9 @@
                                            VerticalAlignment="Center" Margin="0,0,7,0"/>
                                 <ToggleButton x:Name="MonitorSwitch" Style="{StaticResource Switch}" Height="30"
                                               Checked="ToggleMonitor" Unchecked="ToggleMonitor"
-                                              AutomationProperties.Name="Retorno de voz" ToolTip="Ativar ou desativar o retorno de voz"/>
+                                              AutomationProperties.Name="{local:Text UiSidetone}" ToolTip="{local:Text UiSidetoneToggleHelp}"/>
                             </StackPanel>
-                            <TextBlock Text="Retorno de voz" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <TextBlock Text="{local:Text UiSidetone}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </DockPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -407,23 +407,23 @@
                                 <ColumnDefinition Width="136"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Margin="0,0,14,0">
-                                <TextBlock Text="Microfone" Style="{StaticResource FieldLabel}"/>
-                                <ComboBox x:Name="MicChoice" Tag="Microfone indisponível"
+                                <TextBlock Text="{local:Text UiMicrophone}" Style="{StaticResource FieldLabel}"/>
+                                <ComboBox x:Name="MicChoice" Tag="{local:Text UiMicrophoneUnavailable}"
                                           ItemTemplate="{StaticResource EndpointName}"
                                           ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}"
                                           ToolTipService.ShowOnDisabled="True"
-                                          AutomationProperties.Name="Microfone do G321"
+                                          AutomationProperties.Name="{local:Text UiG321Microphone}"
                                           SelectionChanged="DeviceSelectionChanged"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1">
                                 <DockPanel>
                                     <TextBlock x:Name="MonitorValue" DockPanel.Dock="Right" FontSize="12" FontWeight="SemiBold"
                                                Foreground="{StaticResource Accent}" Margin="5,0,0,0" TextAlignment="Right"/>
-                                    <TextBlock Text="Volume" Style="{StaticResource FieldLabel}"/>
+                                    <TextBlock Text="{local:Text UiVolume}" Style="{StaticResource FieldLabel}"/>
                                 </DockPanel>
                                 <Slider x:Name="MonitorSlider" Height="36" Minimum="0" Maximum="300" TickFrequency="1"
                                         IsSnapToTickEnabled="True" ValueChanged="MonitorVolumeChanged"
-                                        AutomationProperties.Name="Volume do retorno em porcentagem"/>
+                                        AutomationProperties.Name="{local:Text UiSidetoneVolumePercentage}"/>
                             </StackPanel>
                         </Grid>
                         <TextBlock x:Name="MonitorStatus" Style="{StaticResource Caption}" Margin="0,6,0,0"
@@ -440,10 +440,10 @@
                             <ColumnDefinition Width="182"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Equalizador" FontSize="25" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{local:Text UiEqualizer}" FontSize="25" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         <StackPanel Grid.Column="1">
-                            <TextBlock Text="Preset" Style="{StaticResource FieldLabel}"/>
-                            <ComboBox x:Name="PresetChoice" AutomationProperties.Name="Preset do equalizador"
+                            <TextBlock Text="{local:Text UiPreset}" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox x:Name="PresetChoice" AutomationProperties.Name="{local:Text UiEqualizerPreset}"
                                       SelectionChanged="PresetChanged"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="19,0,0,0">
@@ -451,7 +451,7 @@
                                        VerticalAlignment="Center" Margin="0,0,7,0"/>
                             <ToggleButton x:Name="EqSwitch" Style="{StaticResource Switch}"
                                           Checked="ToggleEq" Unchecked="ToggleEq"
-                                          AutomationProperties.Name="Equalizador" ToolTip="Ativar ou desativar o equalizador"/>
+                                          AutomationProperties.Name="{local:Text UiEqualizer}" ToolTip="{local:Text UiEqualizerToggleHelp}"/>
                         </StackPanel>
                     </Grid>
 
@@ -472,13 +472,13 @@
                             <DockPanel>
                                 <TextBlock x:Name="PreampValue" DockPanel.Dock="Right" FontSize="12" FontWeight="SemiBold"
                                            Foreground="{StaticResource Accent}" TextAlignment="Right"/>
-                                <TextBlock Text="Pré-amplificador" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="{local:Text UiPreamp}" Style="{StaticResource FieldLabel}"/>
                             </DockPanel>
                             <Slider x:Name="PreampSlider" Height="36" Minimum="-18" Maximum="0" TickFrequency="1"
                                     IsSnapToTickEnabled="True" ValueChanged="EqualizerChanged"
-                                    AutomationProperties.Name="Pré-amplificador em decibéis"/>
+                                    AutomationProperties.Name="{local:Text UiPreampDecibels}"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="Som do Windows" VerticalAlignment="Bottom" Click="OpenSoundSettings"/>
+                        <Button Grid.Column="1" Content="{local:Text UiWindowsSoundSettings}" VerticalAlignment="Bottom" Click="OpenSoundSettings"/>
                     </Grid>
                     <TextBlock x:Name="EqStatus" Style="{StaticResource Caption}" Margin="0,9,0,0"
                                Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
