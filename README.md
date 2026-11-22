@@ -72,7 +72,9 @@ O workflow [Build offline Windows installer](https://github.com/gleyssonsc/g321-
 
 ### Assinatura para distribuição no GitHub
 
-Para assinar uma release, use o **SignTool** do Windows SDK e um certificado de assinatura de código emitido por uma autoridade confiável. O certificado deve estar disponível com a chave no repositório `CurrentUser\My` do Windows. Tokens e serviços de assinatura podem ser usados quando o provedor disponibiliza o certificado e a chave nesse repositório. Para selecionar um certificado em `LocalMachine\My`, passe também `-CertificateStoreLocation LocalMachine`. [Documentação do SignTool](https://learn.microsoft.com/windows/win32/seccrypto/signtool)
+O GitHub Actions pode solicitar a assinatura do EXE offline depois da aprovação e da configuração da conta SignPath. Veja a [configuração da assinatura no GitHub Actions](docs/signpath-setup.md).
+
+Para assinar uma release localmente, use o **SignTool** do Windows SDK e um certificado de assinatura de código emitido por uma autoridade confiável. O certificado deve estar disponível com a chave no repositório `CurrentUser\My` do Windows. Tokens e serviços de assinatura podem ser usados quando o provedor disponibiliza o certificado e a chave nesse repositório. Para selecionar um certificado em `LocalMachine\My`, passe também `-CertificateStoreLocation LocalMachine`. [Documentação do SignTool](https://learn.microsoft.com/windows/win32/seccrypto/signtool)
 
 ```powershell
 $build = @{
