@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>G321 Studio</AssemblyName>
+    <RootNamespace>G321Studio</RootNamespace>
+    <ApplicationIcon>Assets\G321.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Remove="System.Drawing"/>
+    <Using Remove="System.Windows.Forms"/>
+    <PackageReference Include="NAudio" Version="2.4.0" />
+    <Resource Include="Assets\G321.ico" />
+  </ItemGroup>
+</Project>

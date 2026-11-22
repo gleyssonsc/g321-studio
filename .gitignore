@@ -1,0 +1,36 @@
+# Saídas de compilação e do instalador
+bin/
+obj/
+dist/
+artifacts/
+G321 Studio.exe
+G321 Studio Setup.exe
+EqualizerAPO-*-1.4.2.exe
+EqualizerAPO-src-1.4.2.zip
+
+# Ferramentas e preferências locais
+.vs/
+.idea/
+*.user
+*.suo
+Thumbs.db
+Desktop.ini
+.DS_Store
+settings.json
+settings-*.tmp
+.env
+.env.*
+!.env.example
+
+# Capturas de diagnóstico e arquivos de assinatura locais
+/captures/
+/diagnostics/
+/recordings/
+*.log
+*.pcap
+*.pcapng
+*.etl
+*.evtx
+*.dmp
+*.pfx
+*.p12
