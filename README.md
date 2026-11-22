@@ -6,7 +6,9 @@ Aplicativo independente e não oficial para uso com o headset Logitech G G321 LI
 
 Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.1](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.1)
 
-![G321 Studio com o headset em LIGHTSPEED, bateria em 81% e equalizador ligado no preset Plano](docs/interface.jpg)
+![G321 Studio com o ícone da Logitech, headset em LIGHTSPEED, bateria em 80% e equalizador ligado no preset Plano](docs/interface.jpg)
+
+*Captura da compilação atual do código-fonte.*
 
 ## Configuração rápida do EQ em LIGHTSPEED
 
