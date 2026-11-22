@@ -1,0 +1,85 @@
+name: Build offline Windows installer
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2025
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}\G321-DotNet
+        with:
+          dotnet-version: '10.0.404'
+
+      - name: Get the Inno Setup compiler
+        run: |
+          $download = Join-Path $env:RUNNER_TEMP 'innosetup-6.7.3.exe'
+          $compilerDir = Join-Path $env:RUNNER_TEMP 'G321-Inno'
+          Invoke-WebRequest -Uri 'https://github.com/jrsoftware/issrc/releases/download/is-6_7_3/innosetup-6.7.3.exe' -OutFile $download
+          $expected = '9c73c3bae7ed48d44112a0f48e66742c00090bdb5bef71d9d3c056c66e97b732'
+          if ((Get-FileHash -LiteralPath $download -Algorithm SHA256).Hash -ne $expected) {
+            throw 'Inno Setup download did not match the published SHA-256.'
+          }
+          $argsForSetup = @('/PORTABLE=1', '/CURRENTUSER', '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', ('/DIR="{0}"' -f $compilerDir))
+          $setupProcess = Start-Process -FilePath $download -ArgumentList $argsForSetup -PassThru -Wait -WindowStyle Hidden
+          $compiler = Join-Path $compilerDir 'ISCC.exe'
+          if ($setupProcess.ExitCode -ne 0 -or !(Test-Path -LiteralPath $compiler -PathType Leaf)) {
+            throw "Could not install the Inno Setup compiler (exit $($setupProcess.ExitCode))."
+          }
+
+      - name: Download Equalizer APO
+        run: |
+          $vendor = Join-Path $env:RUNNER_TEMP 'G321-EqualizerAPO'
+          $null = New-Item -ItemType Directory -Path $vendor
+          $base = 'https://downloads.sourceforge.net/project/equalizerapo/1.4.2'
+          foreach ($package in 'x64', 'x86', 'ARM64', 'src') {
+            $extension = if ($package -eq 'src') { 'zip' } else { 'exe' }
+            $file = "EqualizerAPO-$package-1.4.2.$extension"
+            curl.exe --fail --location --silent --show-error --retry 3 --retry-all-errors --max-time 180 --output (Join-Path $vendor $file) "$base/$file"
+            if ($LASTEXITCODE -ne 0) {
+              throw "Could not download $file (exit $LASTEXITCODE)."
+            }
+          }
+
+      - name: Build and hash the offline installer
+        run: |
+          if ((dotnet --version) -ne '10.0.404' -or $LASTEXITCODE -ne 0) {
+            throw 'The build must select .NET SDK 10.0.404.'
+          }
+          ./installer/Build-OfflineSetup.ps1 `
+            -ApoDirectory (Join-Path $env:RUNNER_TEMP 'G321-EqualizerAPO') `
+            -InnoCompiler (Join-Path $env:RUNNER_TEMP 'G321-Inno/ISCC.exe')
+
+          $setup = Get-Item -LiteralPath 'dist/G321 Studio Setup.exe'
+          $hash = (Get-FileHash -LiteralPath $setup.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash *$($setup.Name)" | Set-Content -LiteralPath 'dist/SHA256SUMS.txt' -Encoding ascii
+
+      - name: Upload installer and checksum
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: g321-studio-offline-installer
+          path: |
+            dist/G321 Studio Setup.exe
+            dist/SHA256SUMS.txt
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 7

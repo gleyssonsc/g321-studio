@@ -2,7 +2,11 @@
 
 Aplicativo independente e não oficial para uso com o headset Logitech G G321 LIGHTSPEED. Oferece equalizador de 10 bandas com presets, retorno de voz com volume ajustável e leitura da porcentagem de bateria. O projeto é mantido sem afiliação, patrocínio ou endosso da Logitech. [Headset compatível](https://www.logitechg.com/pt-br/shop/p/g321.981-001562)
 
+## Download para Windows
+
 [![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.3/G321-Studio-Setup-1.0.3.exe)
+
+[Política de assinatura de código (Code signing policy)](docs/code-signing-policy.md)
 
 Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.3](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.3)
 
@@ -64,9 +68,29 @@ Para gerar o instalador, use PowerShell 7, o SDK .NET 10, o compilador Inno Setu
 ./installer/Build-OfflineSetup.ps1 -ApoDirectory 'C:\build\EqualizerAPO-1.4.2' -InnoCompiler 'C:\build\InnoSetup\ISCC.exe'
 ```
 
+O workflow [Build offline Windows installer](https://github.com/gleyssonsc/g321-studio/actions/workflows/build-offline-installer.yml) roda a cada push na branch `main`, em novas tags `v*` ou por execução manual. A execução disponibiliza o EXE e o arquivo `SHA256SUMS.txt` em **Artifacts**. A compilação baixa as dependências no runner. O instalador inclui os arquivos necessários para a instalação offline.
+
+### Assinatura para distribuição no GitHub
+
+Para assinar uma release, use o **SignTool** do Windows SDK e um certificado de assinatura de código emitido por uma autoridade confiável. O certificado deve estar disponível com a chave no repositório `CurrentUser\My` do Windows. Tokens e serviços de assinatura podem ser usados quando o provedor disponibiliza o certificado e a chave nesse repositório. Para selecionar um certificado em `LocalMachine\My`, passe também `-CertificateStoreLocation LocalMachine`. [Documentação do SignTool](https://learn.microsoft.com/windows/win32/seccrypto/signtool)
+
+```powershell
+$build = @{
+    ApoDirectory          = 'C:\build\EqualizerAPO-1.4.2'
+    InnoCompiler          = 'C:\build\InnoSetup\ISCC.exe'
+    SignToolPath          = 'C:\build\WindowsSDK\signtool.exe'
+    CertificateThumbprint = '<impressão digital de 40 dígitos hexadecimais>'
+}
+./installer/Build-OfflineSetup.ps1 @build
+```
+
+O build assina os executáveis do Studio, o Setup e o desinstalador em SHA-256, com carimbo de tempo RFC 3161. Use `-TimestampUrl` se o seu provedor indicar outro servidor. A internet é necessária para obter o carimbo durante o build. A instalação continua offline. O script valida a assinatura e o carimbo antes de substituir o EXE em `dist`.
+
+Teste o arquivo assinado em um Windows limpo e use o SHA-256 exibido ao final do build ao publicar uma nova release. O SmartScreen pode continuar exibindo avisos enquanto o arquivo ou o publicador acumula reputação. [Reputação do SmartScreen](https://learn.microsoft.com/pt-br/windows/apps/package-and-deploy/smartscreen-reputation)
+
 ## Licenças e marcas
 
-A licença do código do G321 Studio ainda não foi definida. Os componentes de terceiros seguem suas próprias licenças.
+O código e a documentação originais do G321 Studio usam a [licença MIT](LICENSE). Os componentes de terceiros seguem suas próprias licenças. O ícone e as marcas da Logitech ficam fora da licença MIT.
 
 - O Equalizer APO 1.4.2 é um componente separado, distribuído sob GPLv2. O instalador inclui o arquivo oficial com o código-fonte correspondente, `EqualizerAPO-src-1.4.2.zip`, na pasta **Licenças** da instalação. [Projeto Equalizer APO](https://sourceforge.net/projects/equalizerapo/)
 - O NAudio usa a licença MIT. O arquivo de licença está no repositório e também é instalado na pasta **Licenças**, junto com os avisos do .NET e do Windows Desktop. [Licença do NAudio](installer/NAudio-LICENSE.txt)

@@ -22,6 +22,10 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\{#StudioExe}
 SetupIconFile=..\Assets\G321.ico
+#ifdef AuthenticodeSign
+SignTool=G321Authenticode
+SignedUninstaller=yes
+#endif
 VersionInfoDescription=G321 Studio
 OutputDir={#OutputFolder}
 OutputBaseFilename=G321 Studio Setup
