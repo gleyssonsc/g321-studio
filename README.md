@@ -4,11 +4,17 @@ Aplicativo independente e não oficial para uso com o headset Logitech G G321 LI
 
 ## Download para Windows
 
-[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.3/G321-Studio-Setup-1.0.3.exe)
+[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.4/G321-Studio-Setup-1.0.4.exe)
 
 [Política de assinatura de código (Code signing policy)](docs/code-signing-policy.md)
 
-Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Notas da versão 1.0.3](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.3)
+Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Versão 1.0.4](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.4) · [SHA-256](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.4/SHA256SUMS.txt) · [Atestação de procedência](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.4/G321-Studio-Setup-1.0.4.sigstore.json)
+
+Para verificar a procedência do EXE com o GitHub CLI, execute o comando na pasta do instalador baixado.
+
+```powershell
+gh attestation verify .\G321-Studio-Setup-1.0.4.exe --repo gleyssonsc/g321-studio --source-ref refs/tags/v1.0.4
+```
 
 ![G321 Studio com o ícone da Logitech, headset em LIGHTSPEED, bateria em 79% e equalizador ligado](docs/interface.png)
 
@@ -68,7 +74,7 @@ Para gerar o instalador, use PowerShell 7, o SDK .NET 10, o compilador Inno Setu
 ./installer/Build-OfflineSetup.ps1 -ApoDirectory 'C:\build\EqualizerAPO-1.4.2' -InnoCompiler 'C:\build\InnoSetup\ISCC.exe'
 ```
 
-O workflow [Build offline Windows installer](https://github.com/gleyssonsc/g321-studio/actions/workflows/build-offline-installer.yml) roda a cada push na branch `main`, em novas tags `v*` ou por execução manual. A execução disponibiliza o EXE e o arquivo `SHA256SUMS.txt` em **Artifacts**. A compilação baixa as dependências no runner. O instalador inclui os arquivos necessários para a instalação offline.
+O workflow [Build offline Windows installer](https://github.com/gleyssonsc/g321-studio/actions/workflows/build-offline-installer.yml) roda a cada push na branch `main`, em novas tags `v*` ou por execução manual. Em builds de tags, o workflow confere a versão, gera o EXE com o nome da release e emite a atestação de procedência. O EXE e o arquivo `SHA256SUMS.txt` ficam em **Artifacts**. O instalador inclui os arquivos necessários para a instalação offline.
 
 ### Assinatura para distribuição no GitHub
 
