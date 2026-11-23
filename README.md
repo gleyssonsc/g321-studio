@@ -20,27 +20,27 @@ Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as ver
 2. **Abra o instalador** na conta do Windows que vai usar o app. Se o Equalizer APO ainda estiver ausente, marque **Instalar o Equalizer APO (requer administrador)** na última tela e conclua a instalação.
 3. **Habilite o efeito na saída do G321.** No **Equalizer APO Device Selector**, marque apenas **Fones de ouvido (G321 LIGHTSPEED)** na lista de reprodução. Se o seletor não abrir sozinho, procure-o no menu Iniciar. Reinicie se solicitado.
 4. **Selecione o G321 como saída** no Windows ou no jogo. Mantenha os **Aprimoramentos de áudio** habilitados nessa saída.
-5. **Abra o G321 Studio pela bandeja.** A chave do **Equalizador** deve indicar **Ligado**, com **Plano** selecionado automaticamente. Escolha **Jogos** ou **Graves** para ouvir a mudança.
+5. **Abra o G321 Studio pela bandeja.** Na primeira configuração, o EQ começa ligado no preset **Plano**. Escolha **Jogos** ou **Graves** para ouvir a mudança.
 
 ## Instalação e ajustes
 
-No instalador 1.0.3, escolha **Português (Brasil)** ou **English**. Essa escolha define o idioma do Setup e do Studio para a conta do Windows usada na instalação. Para mudar de idioma, abra o Setup novamente e selecione a outra opção. O instalador opcional do Equalizer APO oferece inglês e alemão.
+No instalador, escolha **Português (Brasil)** ou **English**. Essa escolha define o idioma do Setup e do Studio para a conta do Windows usada na instalação. Para mudar de idioma, abra o Setup novamente e selecione a outra opção. O instalador opcional do Equalizer APO oferece inglês e alemão.
 
 Para instalar sem internet, desmarque a procura automática por atualizações no instalador do Equalizer APO. O instalador oficial desativa o modo protegido do mecanismo de áudio do Windows para carregar o efeito. Essa configuração vale para o sistema todo. Depois da autorização, o Setup extrai o instalador do APO em uma pasta temporária protegida e confere seu SHA-256 antes de abri-lo. [Equalizer APO](https://sourceforge.net/projects/equalizerapo/)
 
 Mantenha selecionada a opção **Iniciar o G321 Studio na bandeja ao entrar no Windows** se quiser iniciar o app junto com o Windows. Antes de atualizar ou desinstalar, use **Sair** no menu da bandeja.
 
-Arraste os pontos da curva ou use os controles circulares para ajustar as bandas. Ao editar uma banda ou o pré-amplificador, o app armazena os ajustes em **Personalizado**. O EQ também se aplica ao áudio do retorno de voz nessa saída.
+Arraste os pontos da curva ou use os controles circulares para ajustar as bandas. O pré-amplificador ajusta o ganho geral entre **−18 dB e +12 dB**. Ao editar uma banda ou o pré-amplificador, o app armazena os ajustes em **Personalizado**. O EQ também se aplica ao áudio do retorno de voz nessa saída.
 
 ## Retorno de voz
 
-Escolha a saída e o microfone do G321, ligue a chave **Retorno de voz** e ajuste o volume. Em LIGHTSPEED, ambos precisam pertencer ao mesmo receptor USB. A desconexão de um dos dispositivos ou a opção **Sair** na bandeja encerra o retorno.
+Escolha a saída e o microfone do G321, ligue a chave **Retorno de voz** e ajuste o volume. Em LIGHTSPEED, ambos precisam pertencer ao mesmo receptor USB. Se os dispositivos forem desconectados, o retorno pausa e volta quando o par estiver disponível, desde que a chave continue ligada.
 
 ## Bandeja e ativação automática
 
 O G321 Studio inicia na bandeja do Windows. Para mostrar a janela, clique duas vezes no ícone ou selecione **Abrir G321 Studio** no menu da bandeja. O **X** e o botão de minimizar recolhem a janela. O EQ e o retorno de voz continuam funcionando se estiverem ligados. Para encerrar o aplicativo, use **Sair** no menu da bandeja.
 
-Com o APO configurado, o Studio liga o EQ com o preset **Plano** quando o G321 responde em LIGHTSPEED. Usar a chave do EQ pausa a ativação automática até a próxima abertura do app.
+O Studio lembra o último preset, os ajustes personalizados e o estado das chaves de EQ e retorno de voz ao reconectar o fone ou reabrir o app. Com o APO configurado, o EQ retoma o preset salvo quando o G321 responde em LIGHTSPEED e a chave está ligada.
 
 ## Bateria
 
@@ -50,7 +50,7 @@ A leitura é atualizada automaticamente e pode ser solicitada em **Atualizar dis
 
 ## Privacidade
 
-O retorno de voz usa o microfone quando você liga a chave correspondente e mantém o áudio em memória para reprodução local. O G321 Studio não grava nem transmite esse áudio. O app guarda as preferências de EQ, o volume do retorno e os identificadores dos dispositivos de áudio selecionados em `%LOCALAPPDATA%\G321 Studio\settings.json`.
+O retorno de voz usa o microfone enquanto a chave estiver ligada e o par de áudio estiver disponível, inclusive após reabrir o app. O áudio fica em memória para reprodução local. O G321 Studio não grava nem transmite esse áudio. O app guarda as preferências de EQ, o estado das chaves, o volume do retorno e os identificadores dos dispositivos de áudio selecionados em `%LOCALAPPDATA%\G321 Studio\settings.json`.
 
 Ao relatar um problema, oculte nomes de usuário, caminhos pessoais, números de série e identificadores de dispositivos antes de compartilhar registros, capturas de tela ou diagnósticos.
 
@@ -72,7 +72,7 @@ O workflow [Build offline Windows installer](https://github.com/gleyssonsc/g321-
 
 ### Assinatura para distribuição no GitHub
 
-O GitHub Actions pode solicitar a assinatura do EXE offline depois da aprovação e da configuração da conta SignPath. Veja a [configuração da assinatura no GitHub Actions](docs/signpath-setup.md).
+Os instaladores publicados até agora estão sem assinatura Authenticode. A assinatura de uma nova versão pode ser feita com um certificado próprio.
 
 Para assinar uma release localmente, use o **SignTool** do Windows SDK e um certificado de assinatura de código emitido por uma autoridade confiável. O certificado deve estar disponível com a chave no repositório `CurrentUser\My` do Windows. Tokens e serviços de assinatura podem ser usados quando o provedor disponibiliza o certificado e a chave nesse repositório. Para selecionar um certificado em `LocalMachine\My`, passe também `-CertificateStoreLocation LocalMachine`. [Documentação do SignTool](https://learn.microsoft.com/windows/win32/seccrypto/signtool)
 

@@ -1,5 +1,7 @@
 # Ativar a assinatura SignPath
 
+A candidatura do G321 Studio foi recusada. Este guia registra a integração preparada para a SignPath. O processo disponível para a versão 1.0.4 está na [seção de assinatura local](../README.md#assinatura-para-distribuição-no-github).
+
 Após a aprovação, vincule o repositório `gleyssonsc/g321-studio` ao projeto SignPath usando o sistema confiável **GitHub.com**. Configure uma política de release que verifique a origem das compilações na branch `main` e exija aprovação manual na SignPath. Use um token com permissão **Submitter** para essa política. [Integração com GitHub](https://docs.signpath.io/trusted-build-systems/github) · [Verificação de origem](https://docs.signpath.io/origin-verification/)
 
 Registre [SignPath-ArtifactConfiguration.xml](../installer/SignPath-ArtifactConfiguration.xml) no projeto SignPath. O XML seleciona apenas o EXE do instalador no ZIP do GitHub Actions. O nome do produto inclui os espaços armazenados no metadado do Inno Setup 6.7.3. O valor de versão enviado no campo `version` carrega os espaços do metadado e vem do build conferido contra o arquivo de projeto. Confira os dois campos no primeiro pedido real. [Configuração de artefatos](https://docs.signpath.io/artifact-configuration/examples#msi-and-pe-file-metadata-restriction)

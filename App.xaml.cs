@@ -26,7 +26,7 @@ public partial class App : Application
         instance = mutex;
 
         StudioText.Initialize();
-        var window = new MainWindow(autoEq: true)
+        var window = new MainWindow()
         {
             Language = XmlLanguage.GetLanguage(CultureInfo.CurrentUICulture.IetfLanguageTag)
         };

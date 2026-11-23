@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>G321 Studio</AssemblyName>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <RootNamespace>G321Studio</RootNamespace>
     <ApplicationIcon>Assets\G321.ico</ApplicationIcon>
   </PropertyGroup>

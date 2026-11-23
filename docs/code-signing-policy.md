@@ -4,13 +4,13 @@ G321 Studio is an independent Windows utility for the Logitech G321 LIGHTSPEED. 
 
 ## Signing status
 
-The public installers are currently unsigned. The project has applied for free code signing provided by [SignPath.io](https://signpath.io/), with a certificate from [SignPath Foundation](https://signpath.org/). The signing workflow will be activated after acceptance.
+The public installers are currently unsigned. SignPath Foundation declined the project's application. Future signed releases can use a publisher code-signing certificate.
 
 ## Builds and approval
 
 - The [offline installer workflow](../.github/workflows/build-offline-installer.yml) builds the installer on a GitHub-hosted Windows runner from the source at the build's commit. It provides one EXE and its SHA-256 checksum.
-- [@gleyssonsc](https://github.com/gleyssonsc) is the maintainer, committer, reviewer, and release approver. The maintainer reviews outside contributions and approves each signing request for an official release. The GitHub and SignPath accounts used for signing must use two-factor authentication.
-- The [SignPath setup](signpath-setup.md) covers Authenticode signing of the offline installer EXE. The workflow verifies the installer signature, publisher and timestamp and computes a new SHA-256 after signing. The bundled app and uninstaller do not receive independent signatures from this workflow. The bundled Equalizer APO binaries are verified by SHA-256 and retain their original bytes.
+- [@gleyssonsc](https://github.com/gleyssonsc) is the maintainer, committer, reviewer, and release approver. The maintainer reviews outside contributions and approves official releases.
+- The [local Authenticode process](../README.md#assinatura-para-distribuição-no-github) supports signing the offline installer, bundled Studio executables, and uninstaller. The build verifies signatures and timestamps before emitting the final SHA-256. The bundled Equalizer APO binaries are verified against their upstream SHA-256 hashes.
 - Signed releases will be published on [GitHub Releases](https://github.com/gleyssonsc/g321-studio/releases) with their SHA-256 checksums. The release notes will state which files are signed.
 
 ## Privacy

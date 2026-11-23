@@ -18,6 +18,10 @@ jobs:
   build:
     runs-on: windows-2025
     timeout-minutes: 25
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     outputs:
       signing-artifact-id: ${{ steps.upload-signing-input.outputs.artifact-id }}
       version: ${{ steps.signing-metadata.outputs.version }}
@@ -112,13 +116,56 @@ jobs:
           retention-days: 7
 
       - name: Upload installer and checksum
-        if: steps.signing-metadata.outcome == 'skipped'
+        if: steps.signing-metadata.outcome == 'skipped' && !startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: g321-studio-offline-installer
           path: |
             dist/G321 Studio Setup.exe
             dist/SHA256SUMS.txt
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Prepare versioned release installer
+        id: release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          $setup = Get-Item -LiteralPath 'dist/G321 Studio Setup.exe'
+          $version = $setup.VersionInfo.ProductVersion.Trim()
+          if ($env:GITHUB_REF_NAME -cne "v$version" -or $version -notmatch '^\d+\.\d+\.\d+$') {
+            throw 'The tag must match the installer product version.'
+          }
+          $null = New-Item -ItemType Directory -Path 'dist/release'
+          $name = "G321-Studio-Setup-$version.exe"
+          $installer = "dist/release/$name"
+          Copy-Item -LiteralPath $setup.FullName -Destination $installer
+          $hash = (Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash *$name" | Set-Content -LiteralPath 'dist/release/SHA256SUMS.txt' -Encoding ascii
+          "installer=$installer" >> $env:GITHUB_OUTPUT
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Attest installer provenance
+        id: provenance
+        if: steps.release.outcome == 'success'
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: ${{ steps.release.outputs.installer }}
+
+      - name: Include the attestation bundle
+        if: steps.provenance.outcome == 'success'
+        env:
+          BUNDLE_PATH: ${{ steps.provenance.outputs.bundle-path }}
+          INSTALLER_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          Copy-Item -LiteralPath $env:BUNDLE_PATH -Destination "dist/release/G321-Studio-Setup-$env:INSTALLER_VERSION.sigstore.json"
+
+      - name: Upload verified release inputs
+        if: steps.provenance.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: g321-studio-release
+          path: dist/release/*
           compression-level: 0
           if-no-files-found: error
           retention-days: 7

@@ -15,6 +15,8 @@ internal sealed class Settings
     private static readonly string SettingsPath = Path.Combine(DirectoryPath, "settings.json");
 
     public string PresetName { get; set; } = "Plano";
+    public bool EqEnabled { get; set; } = true;
+    public bool MonitorEnabled { get; set; }
     public float[] CustomGains { get; set; } = new float[EqParameters.Frequencies.Length];
     public float CustomPreamp { get; set; }
     public float MonitorVolume { get; set; } = 20;

@@ -474,7 +474,7 @@
                                            Foreground="{StaticResource Accent}" TextAlignment="Right"/>
                                 <TextBlock Text="{local:Text UiPreamp}" Style="{StaticResource FieldLabel}"/>
                             </DockPanel>
-                            <Slider x:Name="PreampSlider" Height="36" Minimum="-18" Maximum="0" TickFrequency="1"
+                            <Slider x:Name="PreampSlider" Height="36" Minimum="-18" Maximum="12" TickFrequency="1"
                                     IsSnapToTickEnabled="True" ValueChanged="EqualizerChanged"
                                     AutomationProperties.Name="{local:Text UiPreampDecibels}"/>
                         </StackPanel>

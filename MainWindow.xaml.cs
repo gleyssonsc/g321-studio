@@ -28,15 +28,13 @@ public partial class MainWindow : Window
     private bool batteryReading;
     private int? displayedLightspeedPercent;
     private int? pendingLightspeedPercent;
-    private bool autoEq;
     private bool checkingLightspeed;
     private Endpoint? defaultPlayback;
     private string? eqError;
     private string? monitorError;
 
-    public MainWindow(bool autoEq = false)
+    public MainWindow()
     {
-        this.autoEq = autoEq;
         InitializeComponent();
         BuildBands();
         EqGraph.GainChanged += (band, value) => gains[band].Value = value;
@@ -52,6 +50,7 @@ public partial class MainWindow : Window
         MonitorSlider.Value = Math.Clamp(preferences.MonitorVolume, MonitorSlider.Minimum, MonitorSlider.Maximum);
         UpdateMonitorGain();
         syncing = false;
+        UpdateAudioStatus();
         Closed += OnClosed;
         refreshTimer.Tick += async (_, _) => await RefreshAsync();
     }
@@ -115,6 +114,10 @@ public partial class MainWindow : Window
         if (!StopEq())
             Trace.TraceWarning(eqError);
         StopMonitor();
+    }
+
+    private void SavePreferences()
+    {
         preferences.PresetName = (PresetChoice.SelectedItem as Preset)?.Name ?? "Plano";
         preferences.CustomGains = custom.Gains;
         preferences.CustomPreamp = custom.Preamp;
@@ -155,7 +158,7 @@ public partial class MainWindow : Window
             if (MicChoice.SelectedItem is Endpoint oldMic && !mics.Any(e => e.Id == oldMic.Id))
                 StopMonitor();
 
-            UpdateEndpoints(OutputChoice, headphones, preferences.OutputId);
+            UpdateEndpoints(OutputChoice, headphones, preferences.OutputId, preferLightspeed: true);
             UpdateEndpoints(MicChoice, mics, preferences.MicId);
             defaultPlayback = AudioDevices.GetDefaultPlayback();
         }
@@ -170,38 +173,33 @@ public partial class MainWindow : Window
         }
 
         UpdateAudioStatus();
-        await TryStartAutomaticEqAsync();
+        await RestoreAudioAsync();
         await RefreshBatteryAsync();
     }
 
-    private async Task TryStartAutomaticEqAsync()
+    private async Task RestoreAudioAsync()
     {
-        if (!autoEq || checkingLightspeed || directEq is not null)
+        if (lifetime.IsCancellationRequested)
             return;
+        if (preferences.MonitorEnabled && monitorRoute is null)
+            TryStartMonitor();
+        if (!preferences.EqEnabled && directEq is not null)
+            StopEq();
+        UpdateAudioStatus();
 
-        if (OutputChoice.ItemsSource is not Endpoint[] outputs)
+        if (!preferences.EqEnabled || checkingLightspeed || directEq is not null ||
+            OutputChoice.SelectedItem is not Endpoint output)
             return;
-
-        // When the return is active, EQ activation must never change its output.
-        var candidates = monitorRoute is null ? outputs : outputs.Where(output => Equals(output, OutputChoice.SelectedItem)).ToArray();
-        var preferredOutput = (OutputChoice.SelectedItem as Endpoint)?.Id;
-
         checkingLightspeed = true;
         try
         {
-            var headset = await Task.Run(() => candidates
-                .OrderByDescending(output => output.Id == preferredOutput)
-                .FirstOrDefault(output => LightspeedConnection.HeadsetResponds(output.Id)));
-            if (headset is null || lifetime.IsCancellationRequested || !autoEq ||
-                directEq is not null ||
-                (monitorRoute is not null && !Equals(OutputChoice.SelectedItem, headset)) ||
-                !OutputChoice.Items.Contains(headset))
+            bool connected = await Task.Run(() => LightspeedConnection.HeadsetResponds(output.Id));
+            if (!connected || lifetime.IsCancellationRequested || !preferences.EqEnabled ||
+                directEq is not null || !Equals(OutputChoice.SelectedItem, output))
                 return;
 
-            OutputChoice.SelectedItem = headset;
-            PresetChoice.SelectedItem = EqParameters.Presets.Single(preset => preset.Name == "Plano");
             eqError = null;
-            StartEq(headset);
+            StartEq(output);
             UpdateAudioStatus();
         }
         finally
@@ -274,26 +272,33 @@ public partial class MainWindow : Window
         return percent;
     }
 
-    private static void UpdateEndpoints(ComboBox combo, Endpoint[] endpoints, string? preferredId)
+    private static void UpdateEndpoints(
+        ComboBox combo, Endpoint[] endpoints, string? preferredId, bool preferLightspeed = false)
     {
         if (combo.ItemsSource is Endpoint[] existing && existing.SequenceEqual(endpoints))
             return;
 
         var previous = (combo.SelectedItem as Endpoint)?.Id;
         combo.ItemsSource = endpoints;
-        combo.SelectedItem = endpoints.FirstOrDefault(e => e.Id == (previous ?? preferredId))
-            ?? endpoints.FirstOrDefault();
+        combo.SelectedItem = endpoints.FirstOrDefault(e => e.Id == (preferredId ?? previous));
+        if (combo.SelectedItem is null && preferredId is null)
+            combo.SelectedItem = (preferLightspeed
+                ? endpoints.FirstOrDefault(e => LightspeedConnection.IsReceiverEndpoint(e.Id))
+                : null) ?? endpoints.FirstOrDefault();
     }
 
-    private void DeviceSelectionChanged(object sender, SelectionChangedEventArgs args)
+    private async void DeviceSelectionChanged(object sender, SelectionChangedEventArgs args)
     {
         if (syncing)
             return;
 
-        preferences.OutputId = (OutputChoice.SelectedItem as Endpoint)?.Id;
-        preferences.MicId = (MicChoice.SelectedItem as Endpoint)?.Id;
+        if (ReferenceEquals(sender, OutputChoice))
+            preferences.OutputId = (OutputChoice.SelectedItem as Endpoint)?.Id;
+        else
+            preferences.MicId = (MicChoice.SelectedItem as Endpoint)?.Id;
+        SavePreferences();
         eqError = monitorError = null;
-        UpdateAudioStatus();
+        await RestoreAudioAsync();
     }
 
     private void PresetChanged(object sender, SelectionChangedEventArgs args)
@@ -302,6 +307,7 @@ public partial class MainWindow : Window
             return;
 
         ApplyPreset(preset);
+        SavePreferences();
     }
 
     private void ApplyPreset(Preset preset)
@@ -328,6 +334,7 @@ public partial class MainWindow : Window
         syncing = true;
         PresetChoice.SelectedItem = EqParameters.Presets[^1];
         syncing = false;
+        SavePreferences();
     }
 
     private void UpdateEqParameters()
@@ -339,7 +346,7 @@ public partial class MainWindow : Window
             gainLabels[i].Text = $"{values[i]:+0;-0;0} dB";
         }
         EqGraph.SetGains(values);
-        PreampValue.Text = $"{PreampSlider.Value:0} dB";
+        PreampValue.Text = $"{PreampSlider.Value:+0;-0;0} dB";
         Volatile.Write(ref parameters, new EqParameters(values, (float)PreampSlider.Value));
         if (directEq is not null)
         {
@@ -351,7 +358,10 @@ public partial class MainWindow : Window
     private void MonitorVolumeChanged(object sender, RoutedPropertyChangedEventArgs<double> args)
     {
         if (!syncing)
+        {
             UpdateMonitorGain();
+            SavePreferences();
+        }
     }
 
     private void UpdateMonitorGain()
@@ -360,22 +370,15 @@ public partial class MainWindow : Window
         MonitorValue.Text = $"{MonitorSlider.Value:0}%";
     }
 
-    private void ToggleEq(object sender, RoutedEventArgs args)
+    private async void ToggleEq(object sender, RoutedEventArgs args)
     {
         if (syncing || syncingSwitches)
             return;
 
-        autoEq = false;
+        preferences.EqEnabled = EqSwitch.IsChecked == true;
+        SavePreferences();
         eqError = null;
-        if (EqSwitch.IsChecked != true)
-        {
-            StopEq();
-        }
-        else if (OutputChoice.SelectedItem is Endpoint output)
-        {
-            StartEq(output);
-        }
-        UpdateAudioStatus();
+        await RestoreAudioAsync();
     }
 
     private void StartEq(Endpoint output)
@@ -422,17 +425,33 @@ public partial class MainWindow : Window
             return;
 
         monitorError = null;
-        if (MonitorSwitch.IsChecked != true)
-        {
+        preferences.MonitorEnabled = MonitorSwitch.IsChecked == true;
+        SavePreferences();
+        if (preferences.MonitorEnabled)
+            TryStartMonitor();
+        else
             StopMonitor();
-        }
-        else if (MicChoice.SelectedItem is Endpoint mic && OutputChoice.SelectedItem is Endpoint output)
+        UpdateAudioStatus();
+    }
+
+    private void TryStartMonitor()
+    {
+        if (MicChoice.SelectedItem is Endpoint mic && OutputChoice.SelectedItem is Endpoint output)
         {
             try
             {
                 if (LightspeedConnection.ShareReceiver(mic.Id, output.Id) ||
                     LightspeedConnection.ShareBluetoothAudioDevice(mic.Id, output.Id))
+                {
                     StartMonitor(mic, output);
+                    monitorError = null;
+                    if (preferences.MicId is null || preferences.OutputId is null)
+                    {
+                        preferences.MicId = mic.Id;
+                        preferences.OutputId = output.Id;
+                        SavePreferences();
+                    }
+                }
                 else
                     monitorError = StudioText.Get("RtSidetoneDeviceMismatch");
             }
@@ -441,7 +460,6 @@ public partial class MainWindow : Window
                 monitorError = StudioText.Format("RtSidetoneStartFailed", ex.Message);
             }
         }
-        UpdateAudioStatus();
     }
 
     private void StartMonitor(Endpoint mic, Endpoint output)
@@ -491,31 +509,26 @@ public partial class MainWindow : Window
         bool monitorActive = monitorRoute is not null;
 
         syncingSwitches = true;
-        EqSwitch.IsChecked = eqActive;
-        MonitorSwitch.IsChecked = monitorActive;
+        EqSwitch.IsChecked = preferences.EqEnabled;
+        MonitorSwitch.IsChecked = preferences.MonitorEnabled;
         syncingSwitches = false;
-        EqSwitch.IsEnabled = eqActive || hasOutput;
-        MonitorSwitch.IsEnabled = monitorActive || hasOutput && hasMic;
-        EqSwitchState.Text = StudioText.Get(eqActive ? "RtOn" : "RtOff");
-        MonitorSwitchState.Text = StudioText.Get(monitorActive ? "RtOn" : "RtOff");
-        EqSwitchState.Foreground = (Brush)FindResource(eqActive ? "Accent" : "Quiet");
-        MonitorSwitchState.Foreground = (Brush)FindResource(monitorActive ? "Accent" : "Quiet");
+        EqSwitchState.Text = StudioText.Get(preferences.EqEnabled ? "RtOn" : "RtOff");
+        MonitorSwitchState.Text = StudioText.Get(preferences.MonitorEnabled ? "RtOn" : "RtOff");
+        EqSwitchState.Foreground = (Brush)FindResource(preferences.EqEnabled ? "Accent" : "Quiet");
+        MonitorSwitchState.Foreground = (Brush)FindResource(preferences.MonitorEnabled ? "Accent" : "Quiet");
         OutputChoice.IsEnabled = !eqActive && !monitorActive;
         MicChoice.IsEnabled = !monitorActive && hasMic;
         EqStatus.Foreground = EqSwitchState.Foreground;
 
-        string? eqStatus = eqError ?? (eqActive ? GetActiveEqNotice() : GetInactiveEqStatus());
+        string? eqStatus = eqError ?? (eqActive ? GetActiveEqNotice()
+            : preferences.EqEnabled ? StudioText.Get("RtAutoEqAwaitingLightspeed") : null);
         EqStatus.Text = eqStatus ?? "";
         EqStatus.Visibility = eqStatus is null ? Visibility.Collapsed : Visibility.Visible;
         MonitorStatus.Text = monitorError ?? (monitorActive
             ? StudioText.Get("RtSidetoneVolumeIndependence")
-            : hasMic ? "" : StudioText.Get("RtAwaitingMicrophone"));
+            : preferences.MonitorEnabled && (!hasMic || !hasOutput) ? StudioText.Get("RtAwaitingMicrophone") : "");
         MonitorStatus.Visibility = string.IsNullOrEmpty(MonitorStatus.Text) ? Visibility.Collapsed : Visibility.Visible;
     }
-
-    private string GetInactiveEqStatus() => autoEq
-        ? StudioText.Get("RtAutoEqAwaitingLightspeed")
-        : StudioText.Get("RtSelectLightspeedOutput");
 
     private string? GetActiveEqNotice() =>
         defaultPlayback is { } current && (OutputChoice.SelectedItem as Endpoint)?.Id != current.Id
