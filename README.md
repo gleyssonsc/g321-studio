@@ -4,21 +4,21 @@ Aplicativo independente e não oficial para uso com o headset Logitech G G321 LI
 
 ## Download para Windows
 
-[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.4/G321-Studio-Setup-1.0.4.exe)
+[![Baixar o instalador offline para Windows](docs/baixar-instalador.svg)](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.5/G321-Studio-Setup-1.0.5.exe)
 
 [Política de assinatura de código (Code signing policy)](docs/code-signing-policy.md)
 
-Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Versão 1.0.4](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.4) · [SHA-256](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.4/SHA256SUMS.txt) · [Atestação de procedência](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.4/G321-Studio-Setup-1.0.4.sigstore.json)
+Requer Windows 10 (versão 2004 ou posterior) ou Windows 11. O EXE inclui as versões x64, x86 e ARM64, o ambiente .NET e o instalador oficial do Equalizer APO. [Versão 1.0.5](https://github.com/gleyssonsc/g321-studio/releases/tag/v1.0.5) · [SHA-256](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.5/SHA256SUMS.txt) · [Atestação de procedência](https://github.com/gleyssonsc/g321-studio/releases/download/v1.0.5/G321-Studio-Setup-1.0.5.sigstore.json)
 
 Para verificar a procedência do EXE com o GitHub CLI, execute o comando na pasta do instalador baixado.
 
 ```powershell
-gh attestation verify .\G321-Studio-Setup-1.0.4.exe --repo gleyssonsc/g321-studio --source-ref refs/tags/v1.0.4
+gh attestation verify .\G321-Studio-Setup-1.0.5.exe --repo gleyssonsc/g321-studio --source-ref refs/tags/v1.0.5
 ```
 
-![G321 Studio com o ícone da Logitech, headset em LIGHTSPEED, bateria em 79% e equalizador ligado](docs/interface.png)
+![G321 Studio com a interface em grafite, saída LIGHTSPEED e o equalizador ligado no preset Jogos](docs/interface.png)
 
-*Captura da compilação atual do código-fonte.*
+*Interface da versão 1.0.5 com valores de exemplo.*
 
 ## Configuração rápida do EQ em LIGHTSPEED
 
