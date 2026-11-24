@@ -11,15 +11,14 @@ internal sealed class EqualizerDial : Slider
     private const double SweepEnd = 45;
     private const double PixelsPerDecibel = 4;
 
-    private static readonly Brush Face = ColorBrush(0x18, 0x22, 0x2F);
-    private static readonly Brush HoverFace = ColorBrush(0x23, 0x34, 0x45);
-    private static readonly Brush Indicator = ColorBrush(0xE8, 0xFA, 0xFF);
-    private static readonly Brush Neutral = ColorBrush(0x85, 0xA8, 0xBC);
-    private static readonly Pen Rim = RoundPen(ColorBrush(0x30, 0x46, 0x5A), 1);
-    private static readonly Pen Rail = RoundPen(ColorBrush(0x2D, 0x40, 0x53), 3.5);
-    private static readonly Pen Boost = RoundPen(ColorBrush(0x28, 0xDC, 0xF1), 3.5);
-    private static readonly Pen Cut = RoundPen(ColorBrush(0x6A, 0xA8, 0xFF), 3.5);
-    private static readonly Pen FocusOutline = RoundPen(ColorBrush(0x51, 0xD8, 0xEF), 1);
+    private static readonly Brush Face = ColorBrush(0x24, 0x2A, 0x31);
+    private static readonly Brush HoverFace = ColorBrush(0x30, 0x38, 0x40);
+    private static readonly Brush Indicator = ColorBrush(0xE2, 0xEB, 0xF2);
+    private static readonly Brush Neutral = ColorBrush(0x8A, 0x9A, 0xA7);
+    private static readonly Pen Rim = RoundPen(ColorBrush(0x42, 0x4C, 0x56), 1);
+    private static readonly Pen Rail = RoundPen(ColorBrush(0x39, 0x42, 0x4B), 3.5);
+    private static readonly Pen Gain = RoundPen(Neutral, 3.5);
+    private static readonly Pen FocusOutline = RoundPen(ColorBrush(0xC5, 0xD6, 0xDF), 1);
 
     private double dragStartY;
     private double dragStartValue;
@@ -52,7 +51,7 @@ internal sealed class EqualizerDial : Slider
 
         drawingContext.DrawEllipse(IsMouseOver || IsMouseCaptured ? HoverFace : Face, Rim, center, radius - 5, radius - 5);
         DrawArc(drawingContext, Rail, center, radius, SweepStart, SweepEnd);
-        DrawArc(drawingContext, Value >= 0 ? Boost : Cut, center, radius,
+        DrawArc(drawingContext, Gain, center, radius,
             Math.Min(neutralAngle, angle), Math.Max(neutralAngle, angle));
         drawingContext.DrawEllipse(Neutral, null, PointAt(center, radius + 3.5, neutralAngle), 1.1, 1.1);
         drawingContext.DrawEllipse(Indicator, null, PointAt(center, radius, angle), 2.8, 2.8);

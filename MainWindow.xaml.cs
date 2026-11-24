@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 using NAudio.CoreAudioApi;
@@ -82,9 +83,9 @@ public partial class MainWindow : Window
             {
                 TextAlignment = TextAlignment.Center,
                 FontSize = 12,
-                FontWeight = FontWeights.SemiBold,
-                Foreground = (Brush)FindResource("Accent")
+                FontWeight = FontWeights.Medium
             };
+            Typography.SetNumeralAlignment(value, FontNumeralAlignment.Tabular);
             var stack = new StackPanel();
             stack.Children.Add(new TextBlock
             {
@@ -514,19 +515,16 @@ public partial class MainWindow : Window
         syncingSwitches = false;
         EqSwitchState.Text = StudioText.Get(preferences.EqEnabled ? "RtOn" : "RtOff");
         MonitorSwitchState.Text = StudioText.Get(preferences.MonitorEnabled ? "RtOn" : "RtOff");
-        EqSwitchState.Foreground = (Brush)FindResource(preferences.EqEnabled ? "Accent" : "Quiet");
-        MonitorSwitchState.Foreground = (Brush)FindResource(preferences.MonitorEnabled ? "Accent" : "Quiet");
         OutputChoice.IsEnabled = !eqActive && !monitorActive;
         MicChoice.IsEnabled = !monitorActive && hasMic;
-        EqStatus.Foreground = EqSwitchState.Foreground;
 
         string? eqStatus = eqError ?? (eqActive ? GetActiveEqNotice()
             : preferences.EqEnabled ? StudioText.Get("RtAutoEqAwaitingLightspeed") : null);
         EqStatus.Text = eqStatus ?? "";
         EqStatus.Visibility = eqStatus is null ? Visibility.Collapsed : Visibility.Visible;
-        MonitorStatus.Text = monitorError ?? (monitorActive
-            ? StudioText.Get("RtSidetoneVolumeIndependence")
-            : preferences.MonitorEnabled && (!hasMic || !hasOutput) ? StudioText.Get("RtAwaitingMicrophone") : "");
+        MonitorStatus.Text = monitorError ?? (preferences.MonitorEnabled && (!hasMic || !hasOutput)
+            ? StudioText.Get("RtAwaitingMicrophone")
+            : "");
         MonitorStatus.Visibility = string.IsNullOrEmpty(MonitorStatus.Text) ? Visibility.Collapsed : Visibility.Visible;
     }
 

@@ -4,31 +4,18 @@
         xmlns:local="clr-namespace:G321Studio"
         Title="G321 Studio" Icon="Assets/G321.ico"
         Width="1020" MinWidth="830" MinHeight="650" SizeToContent="Height"
-        WindowStartupLocation="CenterScreen" Foreground="#EDF4FA"
+        WindowStartupLocation="CenterScreen" Foreground="#F0F2F4" Background="#14171B"
         FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="14"
         UseLayoutRounding="True">
-    <Window.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="0.82,1">
-            <GradientStop Color="#131F2A" Offset="0"/>
-            <GradientStop Color="#0E151E" Offset=".44"/>
-            <GradientStop Color="#0C1119" Offset="1"/>
-        </LinearGradientBrush>
-    </Window.Background>
     <Window.Resources>
-        <SolidColorBrush x:Key="Accent" Color="#61E4F7"/>
-        <SolidColorBrush x:Key="Quiet" Color="#A1B2C4"/>
-        <SolidColorBrush x:Key="Surface" Color="#15202D"/>
-        <SolidColorBrush x:Key="Outline" Color="#314256"/>
-        <SolidColorBrush x:Key="Field" Color="#1D2A39"/>
-        <LinearGradientBrush x:Key="Signal" StartPoint="0,0.5" EndPoint="1,0.5">
-            <GradientStop Color="#0595FF" Offset="0"/>
-            <GradientStop Color="#00E0F2" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="Graph" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#111F2B" Offset="0"/>
-            <GradientStop Color="#101923" Offset=".6"/>
-            <GradientStop Color="#14202D" Offset="1"/>
-        </LinearGradientBrush>
+        <SolidColorBrush x:Key="Accent" Color="#59DCED"/>
+        <SolidColorBrush x:Key="Quiet" Color="#AAB4BF"/>
+        <SolidColorBrush x:Key="Surface" Color="#1B1F24"/>
+        <SolidColorBrush x:Key="Outline" Color="#343B43"/>
+        <SolidColorBrush x:Key="Field" Color="#242A31"/>
+        <SolidColorBrush x:Key="Signal" Color="#8A9AA7"/>
+        <SolidColorBrush x:Key="Focus" Color="#C5D6DF"/>
+        <SolidColorBrush x:Key="Graph" Color="#171A1F"/>
         <Geometry x:Key="BrandMark">
             M49,9 A39,39 0 0 0 49,87 L49,71 A23,23 0 0 1 49,25 Z
             M50,41 H86 V76 H70 V57 H50 Z
@@ -43,7 +30,7 @@
         <Style x:Key="FieldLabel" TargetType="TextBlock" BasedOn="{StaticResource Caption}">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
         <DataTemplate x:Key="EndpointName">
             <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
@@ -52,16 +39,16 @@
             <Setter Property="Background" Value="{StaticResource Surface}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Outline}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="Padding" Value="20,12"/>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Background" Value="{StaticResource Field}"/>
             <Setter Property="Foreground" Value="#F2F3F5"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="14,9"/>
-            <Setter Property="MinHeight" Value="37"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -69,12 +56,12 @@
                         <Grid>
                             <Border x:Name="ButtonSurface" Background="{TemplateBinding Background}"
                                     BorderBrush="{StaticResource Outline}" BorderThickness="1"
-                                    CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                    CornerRadius="8" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter RecognizesAccessKey="True"
                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
-                            <Border x:Name="ButtonFocus" CornerRadius="6" BorderThickness="1"
-                                    BorderBrush="{StaticResource Accent}" IsHitTestVisible="False"
+                            <Border x:Name="ButtonFocus" CornerRadius="8" BorderThickness="1"
+                                    BorderBrush="{StaticResource Focus}" IsHitTestVisible="False"
                                     Visibility="Collapsed"/>
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -104,51 +91,22 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Grid x:Name="SwitchSurface" Background="Transparent" SnapsToDevicePixels="True">
-                            <Border x:Name="SwitchFocus" CornerRadius="17" BorderBrush="{StaticResource Accent}"
+                            <Border x:Name="SwitchFocus" CornerRadius="16" BorderBrush="{StaticResource Focus}"
                                     BorderThickness="1" Visibility="Collapsed" IsHitTestVisible="False"/>
-                            <Border x:Name="SwitchTrack" Width="50" Height="27" CornerRadius="13.5"
-                                    Background="#2A384B" BorderBrush="#465A71" BorderThickness="1"/>
-                            <Ellipse x:Name="SwitchThumb" Width="19" Height="19" Fill="#D3DEEB"
-                                     HorizontalAlignment="Left" VerticalAlignment="Center" Margin="7,0,0,0">
-                                <Ellipse.RenderTransform>
-                                    <TranslateTransform/>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
+                            <Border x:Name="SwitchTrack" Width="48" Height="24" CornerRadius="12"
+                                    Background="#292F36" BorderBrush="#505B66" BorderThickness="1"/>
+                            <Ellipse x:Name="SwitchThumb" Width="16" Height="16" Fill="#BBC5CE"
+                                     HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#8BA3B9"/>
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#9AA8B4"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="SwitchTrack" Property="Background" Value="{StaticResource Signal}"/>
-                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#76ECF9"/>
+                                <Setter TargetName="SwitchTrack" Property="Background" Value="#526370"/>
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#80929F"/>
                                 <Setter TargetName="SwitchThumb" Property="Fill" Value="#F5FDFF"/>
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="SwitchThumb"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                                                To="23" Duration="0:0:0.16">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <QuadraticEase EasingMode="EaseOut"/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="SwitchThumb"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                                                To="0" Duration="0:0:0.16">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <QuadraticEase EasingMode="EaseOut"/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
+                                <Setter TargetName="SwitchThumb" Property="HorizontalAlignment" Value="Right"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="SwitchSurface" Property="Opacity" Value=".77"/>
@@ -169,15 +127,15 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBoxItem">
-                        <Border x:Name="ItemSurface" Padding="10,8" Background="Transparent">
+                        <Border x:Name="ItemSurface" Padding="12,8" Background="Transparent">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="ItemSurface" Property="Background" Value="#20394B"/>
+                                <Setter TargetName="ItemSurface" Property="Background" Value="#313B44"/>
                             </Trigger>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="ItemSurface" Property="Background" Value="#2A4659"/>
+                                <Setter TargetName="ItemSurface" Property="Background" Value="#3C4853"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -197,10 +155,10 @@
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
                                         <Border x:Name="Field" Background="{StaticResource Field}" BorderBrush="{StaticResource Outline}"
-                                                CornerRadius="7" BorderThickness="1"/>
+                                                CornerRadius="8" BorderThickness="1"/>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Field" Property="Background" Value="#26394A"/>
+                                                <Setter TargetName="Field" Property="Background" Value="#303840"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -216,12 +174,12 @@
                             <Path Data="M 0 0 L 4 4 L 8 0" Stroke="{StaticResource Quiet}"
                                 HorizontalAlignment="Right" VerticalAlignment="Center"
                                 Margin="0,0,12,0" IsHitTestVisible="False"/>
-                            <Border x:Name="FocusOutline" BorderBrush="{StaticResource Accent}" BorderThickness="1"
-                                    CornerRadius="7" IsHitTestVisible="False" Visibility="Collapsed"/>
+                            <Border x:Name="FocusOutline" BorderBrush="{StaticResource Focus}" BorderThickness="1"
+                                    CornerRadius="8" IsHitTestVisible="False" Visibility="Collapsed"/>
                             <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True"
                                    IsOpen="{TemplateBinding IsDropDownOpen}" Focusable="False">
                                 <Border Background="{StaticResource Field}" BorderBrush="{StaticResource Outline}" BorderThickness="1"
-                                    MinWidth="{TemplateBinding ActualWidth}" CornerRadius="7" Margin="0,3,0,0">
+                                    MinWidth="{TemplateBinding ActualWidth}" CornerRadius="8" Margin="0,4,0,0">
                                     <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                                   VerticalScrollBarVisibility="Auto">
                                         <ItemsPresenter/>
@@ -273,16 +231,16 @@
                                 </Track.DecreaseRepeatButton>
                                 <Track.IncreaseRepeatButton>
                                     <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Focusable="False"
-                                                  Background="#43566B" Template="{StaticResource SliderRail}"/>
+                                                  Background="{StaticResource Outline}" Template="{StaticResource SliderRail}"/>
                                 </Track.IncreaseRepeatButton>
                                 <Track.Thumb>
                                     <Thumb x:Name="SliderThumb" Width="14" Height="14" Cursor="Hand"
-                                           Focusable="False" Background="{StaticResource Signal}">
+                                           Focusable="False" Background="#D2DCE4">
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
                                                 <Border x:Name="ThumbCore" CornerRadius="7"
                                                         Background="{TemplateBinding Background}"
-                                                        BorderBrush="#8CEBFA" BorderThickness="1"/>
+                                                        BorderBrush="#E2EBF2" BorderThickness="1"/>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="ThumbCore" Property="BorderBrush" Value="White"/>
@@ -293,8 +251,8 @@
                                     </Thumb>
                                 </Track.Thumb>
                             </Track>
-                            <Border x:Name="SliderFocus" CornerRadius="5" BorderThickness="1"
-                                    BorderBrush="{StaticResource Accent}" IsHitTestVisible="False"
+                            <Border x:Name="SliderFocus" CornerRadius="8" BorderThickness="1"
+                                    BorderBrush="{StaticResource Focus}" IsHitTestVisible="False"
                                     Visibility="Collapsed"/>
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -312,101 +270,105 @@
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel MaxWidth="1170" Margin="28,19,28,14">
+        <StackPanel MaxWidth="1170" Margin="28,20,28,16">
             <Grid Margin="0,0,0,16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <Border Width="55" Height="55" Background="#182837" BorderBrush="#39556A"
-                            BorderThickness="1" CornerRadius="13" Margin="0,0,13,0">
-                        <Viewbox Width="37" Height="37">
-                            <Path Data="{StaticResource BrandMark}" Fill="{StaticResource Signal}"/>
+                    <Border Width="48" Height="48" Background="{StaticResource Surface}" BorderBrush="{StaticResource Outline}"
+                            BorderThickness="1" CornerRadius="8" Margin="0,0,12,0">
+                        <Viewbox Width="32" Height="32">
+                            <Path Data="{StaticResource BrandMark}" Fill="{StaticResource Accent}"/>
                         </Viewbox>
                     </Border>
-                    <TextBlock Text="G321 Studio" FontSize="29" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="G321 Studio" FontSize="28" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </StackPanel>
                 <Button Grid.Column="1" VerticalAlignment="Center" Click="RefreshClicked"
                         AutomationProperties.Name="{local:Text UiRefreshDevices}">
                     <StackPanel Orientation="Horizontal">
                         <Path Data="M 13 3 L 13 7 L 9 7 M 12.7 6.7 A 5.2 5.2 0 1 0 13 10"
-                              Stroke="{StaticResource Accent}" StrokeThickness="1.4"
-                              Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,7,0"/>
+                              Stroke="{StaticResource Quiet}" StrokeThickness="1.5"
+                              Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <TextBlock Text="{local:Text UiRefreshDevices}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </Grid>
 
-            <Grid Margin="0,0,0,14">
+            <Grid Margin="0,0,0,16">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.05*"/>
-                    <ColumnDefinition Width="14"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="1.08*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Style="{StaticResource Card}" Padding="16,10">
+                <Border Style="{StaticResource Card}" Padding="16,12">
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="Auto" MinHeight="56"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="148"/>
+                            <ColumnDefinition Width="112"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel VerticalAlignment="Center" Margin="0,0,14,0">
-                            <TextBlock Text="{local:Text UiAudioOutput}" Style="{StaticResource FieldLabel}"/>
-                            <ComboBox x:Name="OutputChoice" Tag="{local:Text UiG321Unavailable}"
+                        <TextBlock Text="{local:Text UiAudioOutput}" Height="36" FontSize="16" FontWeight="SemiBold"
+                                   VerticalAlignment="Top" Padding="0,8,0,0"/>
+                        <ComboBox Grid.Row="1" x:Name="OutputChoice" Tag="{local:Text UiG321Unavailable}"
+                                      Margin="0,0,12,0" VerticalAlignment="Bottom"
                                       ItemTemplate="{StaticResource EndpointName}"
                                       ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}"
                                       ToolTipService.ShowOnDisabled="True"
                                       AutomationProperties.Name="{local:Text UiG321AudioOutput}"
                                       SelectionChanged="DeviceSelectionChanged"/>
-                        </StackPanel>
-                        <Border Grid.Column="1" BorderBrush="{StaticResource Outline}" BorderThickness="1,0,0,0"
-                                Padding="13,0,0,0">
+                        <Border Grid.Row="1" Grid.Column="1" BorderBrush="{StaticResource Outline}" BorderThickness="1,0,0,0"
+                                Padding="12,0,0,0">
                             <StackPanel VerticalAlignment="Center">
                                 <Grid>
                                     <TextBlock Text="{local:Text UiBattery}" Style="{StaticResource FieldLabel}" Margin="0" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="BatteryValue" Text="—" FontSize="22" FontWeight="SemiBold"
-                                               HorizontalAlignment="Right" Foreground="{StaticResource Accent}"
+                                    <TextBlock x:Name="BatteryValue" Text="—" FontSize="20" FontWeight="Medium"
+                                               HorizontalAlignment="Right" Typography.NumeralAlignment="Tabular"
                                                AutomationProperties.LiveSetting="Polite"/>
                                 </Grid>
-                                <ProgressBar x:Name="BatteryProgress" Maximum="100" Height="5" Margin="0,4,0,0"
+                                <ProgressBar x:Name="BatteryProgress" Maximum="100" Height="4" Margin="0,4,0,0"
                                              Visibility="Hidden" Focusable="False" AutomationProperties.Name="{local:Text UiG321BatteryPercentage}"
                                              Background="{StaticResource Outline}" Foreground="{StaticResource Signal}">
                                     <ProgressBar.Template>
                                         <ControlTemplate TargetType="ProgressBar">
                                             <Grid>
-                                                <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="2.5"/>
+                                                <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="2"/>
                                                 <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}"
-                                                        HorizontalAlignment="Left" CornerRadius="2.5"/>
+                                                        HorizontalAlignment="Left" CornerRadius="2"/>
                                             </Grid>
                                         </ControlTemplate>
                                     </ProgressBar.Template>
                                 </ProgressBar>
                                 <TextBlock x:Name="BatteryDetail" Text="{local:Text UiCheckingBattery}" Style="{StaticResource Caption}"
-                                           FontSize="11" Margin="0,5,0,0"/>
+                                           FontSize="11" Margin="0,4,0,0"/>
                             </StackPanel>
                         </Border>
                     </Grid>
                 </Border>
 
-                <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16,10">
+                <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16,12">
                     <StackPanel>
-                        <DockPanel Margin="0,0,0,5">
+                        <DockPanel Margin="0,0,0,4">
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
                                 <TextBlock x:Name="MonitorSwitchState" Style="{StaticResource Caption}" TextAlignment="Right"
-                                           VerticalAlignment="Center" Margin="0,0,7,0"/>
-                                <ToggleButton x:Name="MonitorSwitch" Style="{StaticResource Switch}" Height="30"
+                                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <ToggleButton x:Name="MonitorSwitch" Style="{StaticResource Switch}"
                                               Checked="ToggleMonitor" Unchecked="ToggleMonitor"
                                               AutomationProperties.Name="{local:Text UiSidetone}" ToolTip="{local:Text UiSidetoneToggleHelp}"/>
                             </StackPanel>
-                            <TextBlock Text="{local:Text UiSidetone}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <TextBlock Text="{local:Text UiSidetone}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </DockPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="136"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,14,0">
+                            <StackPanel Margin="0,0,12,0">
                                 <TextBlock Text="{local:Text UiMicrophone}" Style="{StaticResource FieldLabel}"/>
                                 <ComboBox x:Name="MicChoice" Tag="{local:Text UiMicrophoneUnavailable}"
                                           ItemTemplate="{StaticResource EndpointName}"
@@ -418,15 +380,17 @@
                             <StackPanel Grid.Column="1">
                                 <DockPanel>
                                     <TextBlock x:Name="MonitorValue" DockPanel.Dock="Right" FontSize="12" FontWeight="SemiBold"
-                                               Foreground="{StaticResource Accent}" Margin="5,0,0,0" TextAlignment="Right"/>
+                                               Margin="4,0,0,0" TextAlignment="Right" Typography.NumeralAlignment="Tabular"/>
                                     <TextBlock Text="{local:Text UiVolume}" Style="{StaticResource FieldLabel}"/>
                                 </DockPanel>
                                 <Slider x:Name="MonitorSlider" Height="36" Minimum="0" Maximum="300" TickFrequency="1"
                                         IsSnapToTickEnabled="True" ValueChanged="MonitorVolumeChanged"
-                                        AutomationProperties.Name="{local:Text UiSidetoneVolumePercentage}"/>
+                                        AutomationProperties.Name="{local:Text UiSidetoneVolumePercentage}"
+                                        AutomationProperties.HelpText="{local:Text RtSidetoneVolumeIndependence}"
+                                        ToolTip="{local:Text RtSidetoneVolumeIndependence}"/>
                             </StackPanel>
                         </Grid>
-                        <TextBlock x:Name="MonitorStatus" Style="{StaticResource Caption}" Margin="0,6,0,0"
+                        <TextBlock x:Name="MonitorStatus" Style="{StaticResource Caption}" Margin="0,8,0,0"
                                    Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
                     </StackPanel>
                 </Border>
@@ -437,18 +401,18 @@
                     <Grid Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="182"/>
+                            <ColumnDefinition Width="180"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{local:Text UiEqualizer}" FontSize="25" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{local:Text UiEqualizer}" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         <StackPanel Grid.Column="1">
                             <TextBlock Text="{local:Text UiPreset}" Style="{StaticResource FieldLabel}"/>
                             <ComboBox x:Name="PresetChoice" AutomationProperties.Name="{local:Text UiEqualizerPreset}"
                                       SelectionChanged="PresetChanged"/>
                         </StackPanel>
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="19,0,0,0">
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="16,0,0,0">
                             <TextBlock x:Name="EqSwitchState" Style="{StaticResource Caption}" Width="72" TextAlignment="Right"
-                                       VerticalAlignment="Center" Margin="0,0,7,0"/>
+                                       VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <ToggleButton x:Name="EqSwitch" Style="{StaticResource Switch}"
                                           Checked="ToggleEq" Unchecked="ToggleEq"
                                           AutomationProperties.Name="{local:Text UiEqualizer}" ToolTip="{local:Text UiEqualizerToggleHelp}"/>
@@ -456,9 +420,9 @@
                     </Grid>
 
                     <Border Background="{StaticResource Graph}" BorderBrush="{StaticResource Outline}"
-                            BorderThickness="1" CornerRadius="12" Padding="8,3,8,10">
+                            BorderThickness="1" CornerRadius="8" Padding="8,4,8,12">
                         <StackPanel>
-                            <local:EqualizerGraph x:Name="EqGraph" Height="173"/>
+                            <local:EqualizerGraph x:Name="EqGraph" Height="176"/>
                             <UniformGrid x:Name="Bands" Rows="1" Columns="10" Margin="44,0,8,0"/>
                         </StackPanel>
                     </Border>
@@ -471,7 +435,7 @@
                         <StackPanel Margin="0,0,20,0">
                             <DockPanel>
                                 <TextBlock x:Name="PreampValue" DockPanel.Dock="Right" FontSize="12" FontWeight="SemiBold"
-                                           Foreground="{StaticResource Accent}" TextAlignment="Right"/>
+                                           TextAlignment="Right" Typography.NumeralAlignment="Tabular"/>
                                 <TextBlock Text="{local:Text UiPreamp}" Style="{StaticResource FieldLabel}"/>
                             </DockPanel>
                             <Slider x:Name="PreampSlider" Height="36" Minimum="-18" Maximum="12" TickFrequency="1"
@@ -480,7 +444,7 @@
                         </StackPanel>
                         <Button Grid.Column="1" Content="{local:Text UiWindowsSoundSettings}" VerticalAlignment="Bottom" Click="OpenSoundSettings"/>
                     </Grid>
-                    <TextBlock x:Name="EqStatus" Style="{StaticResource Caption}" Margin="0,9,0,0"
+                    <TextBlock x:Name="EqStatus" Style="{StaticResource Caption}" Margin="0,8,0,0"
                                Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
                 </StackPanel>
             </Border>

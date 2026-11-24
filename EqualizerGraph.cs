@@ -17,19 +17,17 @@ public sealed class EqualizerGraph : FrameworkElement
 
     private static readonly int[] Levels = [12, 6, 0, -6, -12];
     private static readonly Typeface AxisTypeface = new("Segoe UI");
-    private static readonly Brush PlotBackground = Solid(0xff, 0x10, 0x18, 0x23);
-    private static readonly Brush AxisLabels = Solid(0xff, 0xa5, 0xb3, 0xc4);
-    private static readonly Brush ZeroLabel = Solid(0xff, 0xc8, 0xd9, 0xea);
-    private static readonly Brush BandHighlight = Solid(0x10, 0x39, 0xb9, 0xff);
-    private static readonly Brush SignalFill = MakeSignalFill();
-    private static readonly Brush DotCenter = Solid(0xff, 0x12, 0x21, 0x32);
-    private static readonly Brush ActiveDot = Solid(0xff, 0xa7, 0xfb, 0xff);
-    private static readonly Brush DotHalo = Solid(0x24, 0x2f, 0xd8, 0xff);
-    private static readonly Pen GridLine = MakePen(Solid(0xff, 0x25, 0x33, 0x44), 1);
-    private static readonly Pen ZeroLine = MakePen(Solid(0xff, 0x53, 0x6c, 0x84), 1, DashStyles.Dash);
-    private static readonly Pen SignalHalo = MakePen(Solid(0x19, 0x24, 0xd0, 0xff), 7);
-    private static readonly Pen SignalLine = MakePen(Solid(0xff, 0x47, 0xe2, 0xfb), 2.2);
-    private static readonly Pen DotRing = MakePen(Solid(0xff, 0x50, 0xe3, 0xfc), 1.8);
+    private static readonly Brush PlotBackground = Solid(0xff, 0x14, 0x17, 0x1b);
+    private static readonly Brush AxisLabels = Solid(0xff, 0xaa, 0xb4, 0xbf);
+    private static readonly Brush ZeroLabel = Solid(0xff, 0xe1, 0xe6, 0xeb);
+    private static readonly Brush BandHighlight = Solid(0x12, 0xb0, 0xc0, 0xcb);
+    private static readonly Brush SignalFill = Solid(0x10, 0x59, 0xdc, 0xed);
+    private static readonly Brush DotCenter = PlotBackground;
+    private static readonly Brush Signal = Solid(0xff, 0x59, 0xdc, 0xed);
+    private static readonly Pen GridLine = MakePen(Solid(0xff, 0x2a, 0x30, 0x36), 1);
+    private static readonly Pen ZeroLine = MakePen(Solid(0xff, 0x6e, 0x7b, 0x86), 1, DashStyles.Dash);
+    private static readonly Pen SignalLine = MakePen(Signal, 2);
+    private static readonly Pen DotRing = MakePen(Signal, 1.5);
 
     private readonly float[] gains = new float[EqParameters.Frequencies.Length];
     private int hoveredBand = -1;
@@ -79,15 +77,12 @@ public sealed class EqualizerGraph : FrameworkElement
 
         drawingContext.DrawGeometry(SignalFill, null, BuildCurve(points, plot.Bottom));
         StreamGeometry curve = BuildCurve(points);
-        drawingContext.DrawGeometry(null, SignalHalo, curve);
         drawingContext.DrawGeometry(null, SignalLine, curve);
         for (int band = 0; band < points.Length; band++)
         {
             bool selected = band == selectedBand;
-            if (selected)
-                drawingContext.DrawEllipse(DotHalo, null, points[band], 11, 11);
-            double radius = selected ? 5.6 : 4.1;
-            drawingContext.DrawEllipse(selected ? ActiveDot : DotCenter, DotRing, points[band], radius, radius);
+            double radius = selected ? 5 : 3.5;
+            drawingContext.DrawEllipse(selected ? Signal : DotCenter, DotRing, points[band], radius, radius);
         }
     }
 
@@ -212,13 +207,6 @@ public sealed class EqualizerGraph : FrameworkElement
         }
         geometry.Freeze();
         return geometry;
-    }
-
-    private static Brush MakeSignalFill()
-    {
-        var brush = new LinearGradientBrush(Color.FromArgb(0x4d, 0x17, 0xb1, 0xf7), Color.FromArgb(0x06, 0x14, 0x74, 0xb5), 90);
-        brush.Freeze();
-        return brush;
     }
 
     private static SolidColorBrush Solid(byte alpha, byte red, byte green, byte blue)

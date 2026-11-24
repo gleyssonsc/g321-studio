@@ -8,6 +8,7 @@ internal sealed class VoicePlayback : IDisposable
 {
     private static readonly long RequestedDuration = TimeSpan.FromMilliseconds(10).Ticks;
     private static readonly long SchedulingHeadroom = TimeSpan.FromMilliseconds(5).Ticks;
+    private static readonly long LightspeedHeadroom = TimeSpan.FromMilliseconds(2).Ticks;
     private static readonly long RecoveryStep = TimeSpan.FromMilliseconds(2).Ticks;
 
     private readonly ManualResetEvent stop = new(false);
@@ -49,7 +50,10 @@ internal sealed class VoicePlayback : IDisposable
             var renderer = client.AudioRenderClient;
             int capacity = client.BufferSize;
             long period = Math.Max(client.DefaultDevicePeriod, RequestedDuration);
-            int target = Math.Min(capacity, FramesIn(period + SchedulingHeadroom, format.SampleRate));
+            long headroom = LightspeedConnection.IsReceiverEndpoint(outputId)
+                ? LightspeedHeadroom
+                : SchedulingHeadroom;
+            int target = Math.Min(capacity, FramesIn(period + headroom, format.SampleRate));
             int recoveryFrames = FramesIn(RecoveryStep, format.SampleRate);
             int timeout = (int)Math.Ceiling(period / (double)TimeSpan.TicksPerMillisecond);
             var scratch = new byte[capacity * format.BlockAlign];
